@@ -27,7 +27,7 @@ import sun.rmi.runtime.Log;
 
 public class GameStage extends Stage {
     Texture img;
-    List<PhysicsActor> obstacleList = new ArrayList<>();
+   // List<PhysicsActor> obstacleList = new ArrayList<>();
     PhysicsActor player;
     public World world;
 
@@ -43,7 +43,7 @@ public class GameStage extends Stage {
         ObstacleActor obstacleActor;
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
-        obstacleActor = new ObstacleActor(world, new Vector2(0,-h+10), new Vector2(w, h), "bottom", false, 0.5f);
+        obstacleActor = new ObstacleActor(world, new Vector2(0,-h+10), new Vector2(w, h), "bottom", false, 1.2f);
         addActor(obstacleActor);
         obstacleActor = new ObstacleActor(world, new Vector2(-w+10,0), new Vector2(w, h), "left", false, 0.5f);
         addActor(obstacleActor);
@@ -52,11 +52,16 @@ public class GameStage extends Stage {
 
         //Gdx.app.debug("");
         PhysicsActor actor;
-        Vector2[] vertices;
-        int divs = 7;
+        actor = new PhysicsActor(world, new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2), "badlogic.jpg", BodyDef.BodyType.DynamicBody, "player", true);
+        addActor(actor);
+        player = actor;
+
+        actor = new PhysicsActor(world, new Vector2(20, 20), "badlogic.jpg", BodyDef.BodyType.DynamicBody, "box", false);
+        addActor(actor);
+        /*Vector2[] vertices;
+        int divs = 6;
         vertices = new Vector2[divs];
         float r = 100f;
-
         for(int i=0;i<divs;i++){
             float x,y;
             x = r * (float)(Math.cos(Math.toRadians(360/divs*i+90)));
@@ -65,8 +70,7 @@ public class GameStage extends Stage {
             vertices[i] = new Vector2( x,y );
         }
         actor = new PhysicsActor(world, new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2), "badlogic.jpg", BodyDef.BodyType.DynamicBody, "player", vertices);
-        addActor(actor);
-        player = actor;
+        */ // custom shape
     }
 
     @Override

@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
@@ -24,9 +26,18 @@ public class PhysicsActor extends Actor {
     Body body;
     public String label;
 
-    public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label){
+    public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label, boolean isRound){
         prepareBody(world, position, textureName, bodyType, label);
-        createFixture();
+        Shape shape;
+        if(isRound){
+            shape = new CircleShape();
+            shape.setRadius(100f/PIXELS_TO_METERS);
+        }else{
+            shape = new PolygonShape();
+            ((PolygonShape)shape).setAsBox(sprite.getWidth()/2 / PIXELS_TO_METERS, sprite.getHeight()
+                    /2 / PIXELS_TO_METERS);
+        }
+        createFixture(shape);
     }
 
     public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label, Vector2[] vertices){
@@ -48,11 +59,7 @@ public class PhysicsActor extends Actor {
         body.setUserData(this);
     }
 
-    public void createFixture(){
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(sprite.getWidth()/2 / PIXELS_TO_METERS, sprite.getHeight()
-                /2 / PIXELS_TO_METERS);
-
+    public void createFixture(Shape shape){
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 0.1f;
