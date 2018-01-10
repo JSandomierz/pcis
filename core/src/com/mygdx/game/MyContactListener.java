@@ -17,6 +17,23 @@ public class MyContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
         Gdx.app.debug("Phys", "begin contact");
+        Body bodyb = contact.getFixtureB().getBody();
+        Body bodya = contact.getFixtureA().getBody();
+        //body.applyLinearImpulse(0f, 1f, body.getPosition().x, body.getPosition().y, true);
+        if(bodyb.getUserData()!=null && bodya.getUserData()!=null){
+            if(bodya.getUserData().getClass() == ObstacleActor.class){
+                ObstacleActor obstacle = (ObstacleActor)bodya.getUserData();
+                Gdx.app.debug("Phys", "Collision with obstacle: "+obstacle.label);
+            }
+            if(bodyb.getUserData().getClass() == ObstacleActor.class){
+                ObstacleActor obstacle = (ObstacleActor)bodyb.getUserData();
+                Gdx.app.debug("Phys", "Collision with obstacle: "+obstacle.label);
+            }
+            if(bodyb.getUserData().getClass() == PhysicsActor.class){
+                PhysicsActor physicsActor = ((PhysicsActor)bodyb.getUserData());
+                Gdx.app.debug("Phys", "begin contact body: "+physicsActor);
+            }
+        }
     }
 
     @Override
@@ -27,7 +44,7 @@ public class MyContactListener implements ContactListener {
         if(body.getUserData()!=null){
             if(body.getUserData().getClass() == PhysicsActor.class){
                 PhysicsActor physicsActor = ((PhysicsActor)body.getUserData());
-                Gdx.app.debug("Phys", "end contact body: "+physicsActor.x);
+                Gdx.app.debug("Phys", "end contact body: "+physicsActor);
             }
         }
     }

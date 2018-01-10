@@ -88,7 +88,7 @@ public class GameOld extends ApplicationAdapter implements InputProcessor {
 		FixtureDef fixtureDef2 = new FixtureDef();
 		fixtureDef2.shape = shape;
 		fixtureDef2.density = 0.1f;
-		fixtureDef2.restitution = 1.0f;
+		fixtureDef2.restitution = 0.5f;
 		//fixtureDef2.filter.categoryBits = PHYSICS_ENTITY;
 		//fixtureDef2.filter.maskBits = WORLD_ENTITY;
 
@@ -106,9 +106,9 @@ public class GameOld extends ApplicationAdapter implements InputProcessor {
 
 		bodyDef3.position.set(0,0);
 		FixtureDef fixtureDef3 = new FixtureDef();
-		fixtureDef2.shape = shape;
-		fixtureDef2.density = 0.1f;
-		fixtureDef2.restitution = 0.5f;
+		fixtureDef3.shape = shape;
+		fixtureDef3.density = 0.1f;
+		fixtureDef3.restitution = 1.1f;
 		fixtureDef3.filter.categoryBits = WORLD_ENTITY;
 		fixtureDef3.filter.maskBits = PHYSICS_ENTITY;
 

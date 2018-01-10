@@ -5,13 +5,17 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,8 +27,9 @@ import sun.rmi.runtime.Log;
 
 public class GameStage extends Stage {
     Texture img;
-    PhysicsActor actor;
-    World world;
+    List<PhysicsActor> obstacleList = new ArrayList<>();
+    PhysicsActor player;
+    public World world;
 
     public GameStage(Viewport viewport, SpriteBatch batch) {
         super(viewport, batch);
@@ -33,8 +38,35 @@ public class GameStage extends Stage {
         world.setContactListener(new MyContactListener());
 
         //actor = new PhysicsActor(world, new Vector2(Gdx.graphics.getWidth()/2, 100));
-        actor = new PhysicsActor(world, new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2), "badlogic.jpg", BodyDef.BodyType.DynamicBody);
+
+        //create window frame
+        ObstacleActor obstacleActor;
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+        obstacleActor = new ObstacleActor(world, new Vector2(0,-h+10), new Vector2(w, h), "bottom", false, 0.5f);
+        addActor(obstacleActor);
+        obstacleActor = new ObstacleActor(world, new Vector2(-w+10,0), new Vector2(w, h), "left", false, 0.5f);
+        addActor(obstacleActor);
+        obstacleActor = new ObstacleActor(world, new Vector2(w-10,0), new Vector2(w, h), "right", false, 0.5f);
+        addActor(obstacleActor);
+
+        //Gdx.app.debug("");
+        PhysicsActor actor;
+        Vector2[] vertices;
+        int divs = 7;
+        vertices = new Vector2[divs];
+        float r = 100f;
+
+        for(int i=0;i<divs;i++){
+            float x,y;
+            x = r * (float)(Math.cos(Math.toRadians(360/divs*i+90)));
+            y = r * (float)(Math.sin(Math.toRadians(360/divs*i+90)));
+            Gdx.app.debug("TRIG", i+": "+x+", "+y);
+            vertices[i] = new Vector2( x,y );
+        }
+        actor = new PhysicsActor(world, new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2), "badlogic.jpg", BodyDef.BodyType.DynamicBody, "player", vertices);
         addActor(actor);
+        player = actor;
     }
 
     @Override
@@ -57,12 +89,27 @@ public class GameStage extends Stage {
         Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
         Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
         Gdx.app.debug("TOUCH", "  up, pos: "+stageCoords.toString());
+        player.body.setTransform(stageCoords.x/100.f, stageCoords.y/100.f, player.body.getAngle());
+        player.body.setActive(true);
+        player.body.setAwake(true);
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean keyDown (int keyCode) {
         if(keyCode == Input.Keys.PAGE_DOWN){
+        }
+        if(keyCode == Input.Keys.LEFT){
+            player.body.applyLinearImpulse(new Vector2(-1f, 0f), player.body.getPosition(), true);
+        }
+        if(keyCode == Input.Keys.RIGHT){
+            player.body.applyLinearImpulse(new Vector2(1f, 0f), player.body.getPosition(), true);
+        }
+        if(keyCode == Input.Keys.UP){
+            player.body.applyLinearImpulse(new Vector2(0f, 1f), player.body.getPosition(), true);
+        }
+        if(keyCode == Input.Keys.DOWN){
+            player.body.applyLinearImpulse(new Vector2(0f, -1f), player.body.getPosition(), true);
         }
         return super.keyDown(keyCode);
     }
