@@ -14,46 +14,65 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Game extends ApplicationAdapter{
 	GameStage gameStage;
+	static Content content = new Content();
+	final static int WIDTH = 1080;
+	final static int HEIGHT = 1920;
+	final static float PPM = 100f;
 	SpriteBatch batch;
-	OrthographicCamera camera;
+	FollowingCamera camera;
+	OrthographicCamera b2dCam;
 	Viewport viewport;
 
 	Box2DDebugRenderer debugRenderer;
-	Matrix4 debugMatrix;
 
 	@Override
 	public void create () {
+		content.loadTexture("skybg", "skybg.png");
+		content.loadTexture("logo", "logo.png");
+		content.loadTexture("taptostart", "taptostart.png");
+		content.loadTexture("taptotryagain", "taptotryagain.png");
+		content.loadTexture("palace", "palace.png");
+
 
 		Gdx.app.setLogLevel(Gdx.app.LOG_DEBUG);
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(800,600);
-		viewport = new ExtendViewport(800, 600, camera);
-		gameStage = new GameStage(viewport, batch);
-		Gdx.input.setInputProcessor(gameStage);
+		camera = new FollowingCamera();
+		viewport = new ExtendViewport(WIDTH, HEIGHT, camera);
+
 
 		debugRenderer = new Box2DDebugRenderer();
-		OrthographicCamera cam = new OrthographicCamera();
-		cam.setToOrtho(false, Gdx.graphics.getWidth()/100.f, Gdx.graphics.getHeight()/100.f);
-		debugMatrix = cam.combined;
+
+		b2dCam = new OrthographicCamera();
+		b2dCam.setToOrtho(false, WIDTH/100.f, HEIGHT/100.f);
+
+		gameStage = new GameStage(viewport, batch, camera, b2dCam);
+		Gdx.input.setInputProcessor(gameStage);
 	}
 
 	@Override
 	public void render () {
+
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		camera.update();
-
-		// tell the SpriteBatch to render in the
-		// coordinate system specified by the camera.
 		gameStage.act(Gdx.graphics.getDeltaTime());
+		b2dCam.position.y = camera.position.y/PPM;
+		camera.update();
+		b2dCam.update();
 		batch.setProjectionMatrix(camera.combined);
 		gameStage.draw();
-		debugRenderer.render(gameStage.world, debugMatrix);
+		debugRenderer.render(gameStage.world, b2dCam.combined);
 	}
 
 	@Override
 	public void dispose () {
 		batch.dispose();
 	}
+
+	@Override
+	public void resize (int width, int height) {
+		// viewport must be updated for it to work properly
+		viewport.update(width, height);
+	}
+
 }

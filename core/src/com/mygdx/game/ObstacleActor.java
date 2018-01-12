@@ -47,4 +47,10 @@ public class ObstacleActor extends Actor {
         body.createFixture(fixtureDef);
         body.setUserData(this);
     }
+
+    @Override
+    public void setY(float y) {
+        body.setTransform(body.getPosition().x, y/Game.PPM, body.getAngle());
+    }
+
 }

@@ -33,6 +33,17 @@ public class MyContactListener implements ContactListener {
                 PhysicsActor physicsActor = ((PhysicsActor)bodyb.getUserData());
                 Gdx.app.debug("Phys", "begin contact body: "+physicsActor);
             }
+            Polandball player = null;
+            if(bodya.getUserData().getClass() == Polandball.class)
+                player = (Polandball) bodya.getUserData();
+            else if(bodyb.getUserData().getClass() == Polandball.class)
+                player = (Polandball) bodyb.getUserData();
+
+            if(player != null) {
+                Gdx.app.log("PLAYER", "GAME OVER");
+                player.kill();
+            }
+
         }
     }
 

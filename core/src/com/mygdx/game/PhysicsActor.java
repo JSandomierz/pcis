@@ -13,8 +13,12 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Align;
+import com.sun.management.VMOption;
 
 import java.util.List;
+
+import javax.swing.GroupLayout;
 
 /**
  * Created by Jakub on 2018-01-09.
@@ -31,7 +35,7 @@ public class PhysicsActor extends Actor {
         Shape shape;
         if(isRound){
             shape = new CircleShape();
-            shape.setRadius(100f/PIXELS_TO_METERS);
+            shape.setRadius(60f/PIXELS_TO_METERS);
         }else{
             shape = new PolygonShape();
             ((PolygonShape)shape).setAsBox(sprite.getWidth()/2 / PIXELS_TO_METERS, sprite.getHeight()
@@ -49,11 +53,13 @@ public class PhysicsActor extends Actor {
         this.label = label;
         Texture texture = new Texture(textureName);
         sprite = new Sprite(texture);
-        sprite.setPosition((-sprite.getWidth()/2)+position.x,-sprite.getHeight()/2 +position.y);
+        setSize(sprite.getWidth(), sprite.getHeight());
+        setOrigin(Align.center);
+        //setPosition((-sprite.getWidth()/2)+position.x,-sprite.getHeight()/2 +position.y);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = bodyType;
-        bodyDef.position.set((sprite.getX() + sprite.getWidth()/2) / PIXELS_TO_METERS,
-                (sprite.getY() + sprite.getHeight()/2) / PIXELS_TO_METERS);
+        bodyDef.position.set((position.x + sprite.getWidth()/2f) / Game.PPM,
+                (position.y + sprite.getHeight()/2f) / Game.PPM);
 
         body = world.createBody(bodyDef);
         body.setUserData(this);
@@ -88,10 +94,22 @@ public class PhysicsActor extends Actor {
 
     @Override
     public void draw(Batch batch, float alpha){
-        sprite.setPosition((body.getPosition().x * PIXELS_TO_METERS) - sprite.getWidth()/2 ,
-                            (body.getPosition().y * PIXELS_TO_METERS) - sprite.getHeight()/2 );
+        setPosition((body.getPosition().x * Game.PPM) - sprite.getWidth()/2 ,
+                            (body.getPosition().y * Game.PPM) - sprite.getHeight()/2 );
 
-        sprite.setRotation((float)Math.toDegrees(body.getAngle()));
-        batch.draw(sprite, sprite.getX(), sprite.getY(),sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(),1f,1f,sprite.getRotation());
+        setRotation((float)Math.toDegrees(body.getAngle()));
+        batch.draw(sprite, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(),1f,1f,getRotation());
     }
+
+    @Override
+    public void setY(float y) {
+        body.setTransform(body.getPosition().x, (y+sprite.getHeight()/2f)/Game.PPM, body.getAngle());
+    }
+
+    @Override
+    public void setX(float x) {
+        body.setTransform((x+sprite.getWidth()/2f)/Game.PPM, body.getPosition().y, body.getAngle());
+    }
+
+
 }

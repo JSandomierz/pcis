@@ -2,7 +2,11 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -12,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
@@ -19,7 +24,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import sun.rmi.runtime.Log;
 
 /**
  * Created by Jakub on 2018-01-09.
@@ -28,74 +32,87 @@ import sun.rmi.runtime.Log;
 public class GameStage extends Stage {
     Texture img;
    // List<PhysicsActor> obstacleList = new ArrayList<>();
-    PhysicsActor player;
+    private Polandball player;
     public World world;
+    private FollowingCamera camera;
+    private Camera b2dCamera;
+    private SkyActor skyActor = new SkyActor();
+    private ObstacleActor leftBorder, rightBorder, bottomSensor;
+    private FadeInOutSprite logo, tapToStart, tapToTryAgain;
 
-    public GameStage(Viewport viewport, SpriteBatch batch) {
+    private enum Mode {
+        START,
+        PLAY,
+        TRY_AGAIN
+    }
+    private Mode currentMode = Mode.START;
+
+    public GameStage(Viewport viewport, SpriteBatch batch, FollowingCamera camera , Camera b2dCamera) {
         super(viewport, batch);
-
         world = new World(new Vector2(0, -1f),true);
         world.setContactListener(new MyContactListener());
 
-        //actor = new PhysicsActor(world, new Vector2(Gdx.graphics.getWidth()/2, 100));
+        this.camera = camera;
+        this.b2dCamera = b2dCamera;
 
-        //create window frame
-        ObstacleActor obstacleActor;
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
-        obstacleActor = new ObstacleActor(world, new Vector2(0,-h+10), new Vector2(w, h), "bottom", false, 1.2f);
-        addActor(obstacleActor);
-        obstacleActor = new ObstacleActor(world, new Vector2(-w+10,0), new Vector2(w, h), "left", false, 0.5f);
-        addActor(obstacleActor);
-        obstacleActor = new ObstacleActor(world, new Vector2(w-10,0), new Vector2(w, h), "right", false, 0.5f);
-        addActor(obstacleActor);
+        addActor(skyActor);
 
-        //Gdx.app.debug("");
-        PhysicsActor actor;
-        actor = new PhysicsActor(world, new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2), "badlogic.jpg", BodyDef.BodyType.DynamicBody, "player", true);
-        addActor(actor);
-        player = actor;
+        float w = Game.WIDTH;
+        float h = Game.HEIGHT;
+        bottomSensor = new ObstacleActor(world, new Vector2(0,20), new Vector2(w, 10), "bottom", true, 1.2f);
+        leftBorder = new ObstacleActor(world, new Vector2(0,0), new Vector2(10, h), "left", false, 0.5f);
+        rightBorder = new ObstacleActor(world, new Vector2(w-10,0), new Vector2(10, h), "right", false, 0.5f);
 
-        actor = new PhysicsActor(world, new Vector2(20, 20), "badlogic.jpg", BodyDef.BodyType.DynamicBody, "box", false);
-        addActor(actor);
-        /*Vector2[] vertices;
-        int divs = 6;
-        vertices = new Vector2[divs];
-        float r = 100f;
-        for(int i=0;i<divs;i++){
-            float x,y;
-            x = r * (float)(Math.cos(Math.toRadians(360/divs*i+90)));
-            y = r * (float)(Math.sin(Math.toRadians(360/divs*i+90)));
-            Gdx.app.debug("TRIG", i+": "+x+", "+y);
-            vertices[i] = new Vector2( x,y );
-        }
-        actor = new PhysicsActor(world, new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2), "badlogic.jpg", BodyDef.BodyType.DynamicBody, "player", vertices);
-        */ // custom shape
+        player = new Polandball(world, new Vector2(Game.WIDTH/2f-60f, 40f));
+        addActor(player);
+        camera.setPlayer(player);
+
+        logo = new FadeInOutSprite(Game.content.getTexture("logo"), 0.8f, 0.3f, 1000f);
+        addActor(logo);
+
+        tapToStart = new FadeInOutSprite(Game.content.getTexture("taptostart"), 0.9f, 0.3f, 700f);
+        addActor(tapToStart);
+
+        logo.show();
+        tapToStart.show();
     }
 
     @Override
     public void act(float delta){
         super.act(delta);
+        if(!player.isLive() && currentMode == Mode.PLAY) {
+            currentMode = Mode.TRY_AGAIN;
+
+        }
+        leftBorder.setY(camera.position.y);
+        rightBorder.setY(camera.position.y);
+        bottomSensor.setY(camera.position.y - Game.HEIGHT/2f);
         world.step(delta*2f, 6, 2);
-        //Gdx.app.debug("MyTag", "my debug message");
     }
 
     @Override
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-        Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
-        Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
-        Gdx.app.debug("TOUCH", "down, pos: "+stageCoords.toString());
+        if(currentMode == Mode.START || currentMode == Mode.TRY_AGAIN) {
+            currentMode = Mode.PLAY;
+            logo.hide();
+            tapToStart.hide();
+            player.start();
+        }
+//        Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
+//        Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
+//        Gdx.app.debug("TOUCH", "down, pos: "+stageCoords.toString());
+
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-        Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
-        Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
-        Gdx.app.debug("TOUCH", "  up, pos: "+stageCoords.toString());
-        player.body.setTransform(stageCoords.x/100.f, stageCoords.y/100.f, player.body.getAngle());
-        player.body.setActive(true);
-        player.body.setAwake(true);
+//        Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
+//        Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
+//        Gdx.app.debug("TOUCH", "  up, pos: "+stageCoords.toString());
+//        player.body.setTransform(stageCoords.x/100.f, stageCoords.y/100.f, player.body.getAngle());
+//        player.body.setActive(true);
+//        player.body.setAwake(true);
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
@@ -121,5 +138,24 @@ public class GameStage extends Stage {
     @Override
     public void dispose(){
         img.dispose();
+    }
+
+    private void updateCamera(PhysicsActor player) {
+        float d;
+        if(player.getY() > Game.HEIGHT*3/4f) {
+            d = player.getY() -1/4f*Game.HEIGHT;
+
+        } else {
+            d = Game.HEIGHT*1/2f;
+        }
+        Gdx.app.log("CAM", "player: " + player.getY() + " cam: " + camera.position.y);
+        if(d > camera.position.y) {
+            camera.position.y = d;
+            b2dCamera.position.y = camera.position.y / 100f;
+        }
+    }
+    private  void restartCamera() {
+        camera.position.y = Game.HEIGHT*1/2f;
+        b2dCamera.position.y = camera.position.y / 100f;
     }
 }
