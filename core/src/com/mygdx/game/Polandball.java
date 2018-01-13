@@ -14,10 +14,12 @@ public class Polandball extends PhysicsActor {
     public Polandball(World world, Vector2 position) {
         super(world, position, "polandball.png", BodyDef.BodyType.DynamicBody, "player", true);
         startPos = new Vector2(position);
+        body.setAwake(false);
         body.setActive(false);
     }
 
     public void restart() {
+        body.setAwake(false);
         body.setActive(false);
         setX(startPos.x);
         setY(startPos.y);
@@ -26,6 +28,7 @@ public class Polandball extends PhysicsActor {
     }
 
     public void start() {
+        body.setAwake(true);
         body.setActive(true);
         body.applyLinearImpulse(new Vector2(0, 1f), body.getPosition(), true);
     }

@@ -14,10 +14,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Game extends ApplicationAdapter{
 	GameStage gameStage;
-	static Content content = new Content();
-	final static int WIDTH = 1080;
-	final static int HEIGHT = 1920;
-	final static float PPM = 100f;
+	public static final Content content = new Content();
+	public final static int WIDTH = 1080;
+	public final static int HEIGHT = 1920;
+	public final static float PPM = 100f;
 	SpriteBatch batch;
 	FollowingCamera camera;
 	OrthographicCamera b2dCam;
@@ -32,7 +32,7 @@ public class Game extends ApplicationAdapter{
 		content.loadTexture("taptostart", "taptostart.png");
 		content.loadTexture("taptotryagain", "taptotryagain.png");
 		content.loadTexture("palace", "palace.png");
-
+		content.loadTexture("clouds", "clouds.png");
 
 		Gdx.app.setLogLevel(Gdx.app.LOG_DEBUG);
 		batch = new SpriteBatch();

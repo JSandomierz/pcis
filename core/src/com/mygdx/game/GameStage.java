@@ -3,26 +3,13 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.mygdx.game.sky.SkyActor;
 
 
 /**
@@ -36,7 +23,7 @@ public class GameStage extends Stage {
     public World world;
     private FollowingCamera camera;
     private Camera b2dCamera;
-    private SkyActor skyActor = new SkyActor();
+    private SkyActor skyActor;
     private ObstacleActor leftBorder, rightBorder, bottomSensor;
     private FadeInOutSprite logo, tapToStart, tapToTryAgain;
 
@@ -55,6 +42,7 @@ public class GameStage extends Stage {
         this.camera = camera;
         this.b2dCamera = b2dCamera;
 
+        skyActor = new SkyActor(camera);
         addActor(skyActor);
 
         float w = Game.WIDTH;
@@ -67,10 +55,10 @@ public class GameStage extends Stage {
         addActor(player);
         camera.setPlayer(player);
 
-        logo = new FadeInOutSprite(Game.content.getTexture("logo"), 0.8f, 0.3f, 1000f);
+        logo = new FadeInOutSprite(Game.content.getTexture("logo"), 0.8f, 0.3f, 800f);
         addActor(logo);
 
-        tapToStart = new FadeInOutSprite(Game.content.getTexture("taptostart"), 0.9f, 0.3f, 700f);
+        tapToStart = new FadeInOutSprite(Game.content.getTexture("taptostart"), 0.9f, 0.3f, 500f);
         addActor(tapToStart);
 
         logo.show();
@@ -82,7 +70,8 @@ public class GameStage extends Stage {
         super.act(delta);
         if(!player.isLive() && currentMode == Mode.PLAY) {
             currentMode = Mode.TRY_AGAIN;
-
+            camera.restart();
+            player.restart();
         }
         leftBorder.setY(camera.position.y);
         rightBorder.setY(camera.position.y);
@@ -140,22 +129,4 @@ public class GameStage extends Stage {
         img.dispose();
     }
 
-    private void updateCamera(PhysicsActor player) {
-        float d;
-        if(player.getY() > Game.HEIGHT*3/4f) {
-            d = player.getY() -1/4f*Game.HEIGHT;
-
-        } else {
-            d = Game.HEIGHT*1/2f;
-        }
-        Gdx.app.log("CAM", "player: " + player.getY() + " cam: " + camera.position.y);
-        if(d > camera.position.y) {
-            camera.position.y = d;
-            b2dCamera.position.y = camera.position.y / 100f;
-        }
-    }
-    private  void restartCamera() {
-        camera.position.y = Game.HEIGHT*1/2f;
-        b2dCamera.position.y = camera.position.y / 100f;
-    }
 }

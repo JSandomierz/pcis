@@ -10,11 +10,11 @@ import java.util.HashMap;
 
 public class Content {
     private HashMap<String, Texture> textureHashMap = new HashMap<>();
-    void loadTexture(String name, String path) {
+    public void loadTexture(String name, String path) {
         textureHashMap.put(name, new Texture(path));
     }
 
-    Texture getTexture(String name) {
+    public Texture getTexture(String name) {
         return textureHashMap.get(name);
     }
 }
