@@ -21,22 +21,27 @@ public class MyContactListener implements ContactListener {
         Body bodya = contact.getFixtureA().getBody();
         //body.applyLinearImpulse(0f, 1f, body.getPosition().x, body.getPosition().y, true);
         if(bodyb.getUserData()!=null && bodya.getUserData()!=null){
-            if(bodya.getUserData().getClass() == TrampolineActor.class || bodyb.getUserData().getClass() == TrampolineActor.class){
+            if(bodya.getUserData() instanceof  TrampolineActor || bodyb.getUserData() instanceof  TrampolineActor){
                 GameStage.isPlayerTouchingPaddle = true;
+                //body is trampoline and is sensor, for a and b
+                if((bodya.getFixtureList().get(0).isSensor() && bodya.getUserData() instanceof TrampolineActor) || bodyb.getFixtureList().get(0).isSensor() && bodyb.getUserData() instanceof TrampolineActor){
+                    GameStage.isPlayerTouchingSensorPaddle = true;
+                    //Gdx.app.debug("SENSOR", "paddle touch");
+                }
             }
             if(bodya.getUserData().getClass() == ObstacleActor.class){
                 ObstacleActor obstacle = (ObstacleActor)bodya.getUserData();
                 GameStage.isPlayerTouchingWall = true;
-                Gdx.app.debug("Phys", "Collision with obstacle: "+obstacle.label);
+                //Gdx.app.debug("Phys", "Collision with obstacle: "+obstacle.label);
             }
             if(bodyb.getUserData().getClass() == ObstacleActor.class){
                 ObstacleActor obstacle = (ObstacleActor)bodyb.getUserData();
                 GameStage.isPlayerTouchingWall = true;
-                Gdx.app.debug("Phys", "Collision with obstacle: "+obstacle.label);
+                //Gdx.app.debug("Phys", "Collision with obstacle: "+obstacle.label);
             }
             if(bodyb.getUserData().getClass() == PhysicsActor.class){
                 PhysicsActor physicsActor = ((PhysicsActor)bodyb.getUserData());
-                Gdx.app.debug("Phys", "begin contact body: "+physicsActor);
+                //Gdx.app.debug("Phys", "begin contact body: "+physicsActor);
             }
             Polandball player = null;
             ObstacleActor bottom = null;
@@ -60,7 +65,7 @@ public class MyContactListener implements ContactListener {
 
     @Override
     public void endContact(Contact contact) {
-        Gdx.app.debug("Phys", "end contact: ");
+        //Gdx.app.debug("Phys", "end contact: ");
         Body bodyb = contact.getFixtureB().getBody();
         Body bodya = contact.getFixtureA().getBody();
         //body.applyLinearImpulse(0f, 1f, body.getPosition().x, body.getPosition().y, true);
@@ -68,7 +73,7 @@ public class MyContactListener implements ContactListener {
             if(bodya.getUserData().getClass() == ObstacleActor.class){
                 ObstacleActor obstacle = (ObstacleActor)bodya.getUserData();
                 GameStage.isPlayerTouchingWall = false;
-                Gdx.app.debug("Phys", "end collision with obstacle: "+obstacle.label);
+                //Gdx.app.debug("Phys", "end collision with obstacle: "+obstacle.label);
             }
             if(bodya.getUserData().getClass() == TrampolineActor.class || bodyb.getUserData().getClass() == TrampolineActor.class){
                 GameStage.isPlayerTouchingPaddle = false;
@@ -76,26 +81,26 @@ public class MyContactListener implements ContactListener {
             if(bodyb.getUserData().getClass() == ObstacleActor.class){
                 ObstacleActor obstacle = (ObstacleActor)bodyb.getUserData();
                 GameStage.isPlayerTouchingWall = false;
-                Gdx.app.debug("Phys", "end collision with obstacle: "+obstacle.label);
+                //Gdx.app.debug("Phys", "end collision with obstacle: "+obstacle.label);
             }
             if(bodyb.getUserData().getClass() == PhysicsActor.class){
                 PhysicsActor physicsActor = ((PhysicsActor)bodyb.getUserData());
-                Gdx.app.debug("Phys", "end contact body: "+physicsActor);
+                //Gdx.app.debug("Phys", "end contact body: "+physicsActor);
             }
         }
     }
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
-        Gdx.app.debug("Phys", "pre solve");
-        Body body = contact.getFixtureB().getBody();
+        //Gdx.app.debug("Phys", "pre solve");
+        //Body body = contact.getFixtureB().getBody();
         //body.destroyFixture(body.getFixtureList().first());
     }
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
         //body.applyForceToCenter(0f, -300f, true);
-        Gdx.app.debug("Phys", "post solve");
+        //Gdx.app.debug("Phys", "post solve");
     }
 
 }

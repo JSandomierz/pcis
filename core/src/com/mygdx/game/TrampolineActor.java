@@ -19,12 +19,16 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  */
 
 public class TrampolineActor extends Actor {
-    public float maxWidth = 400f;
+    public float maxWidth = 200f;
     private static final float PIXELS_TO_METERS = 100f;
     Body body;
+    boolean isSensor = false;
     public String label;
     Texture bodyMiddle, bodyBegin;
+    BodyDef bodyDef = new BodyDef();
     float height = 40, width;
+    float dx,dy;
+    Vector2 delta = new Vector2();
 
     public TrampolineActor(World world, Vector2 position1, Vector2 position2, String textureName, BodyDef.BodyType bodyType, String label) {
         bodyBegin = new Texture(Gdx.files.internal("paddle_beg2.png"));
@@ -32,7 +36,8 @@ public class TrampolineActor extends Actor {
         //buildTrampoline(World world, position1, position2, 0f);
     }
 
-    public void buildTrampoline(World world, Vector2 position1, Vector2 position2){
+    public void buildTrampoline(World world, Vector2 position1, Vector2 position2, boolean isSensor){
+        this.isSensor = isSensor;
         width = position1.dst(position2);
         if( width > height/2f) {
             if (width < height) {
@@ -46,20 +51,19 @@ public class TrampolineActor extends Actor {
             this.setHeight(height);
             this.setOrigin(height/2, height/2);
             this.setRotation(90f + (float) Math.toDegrees(Math.atan2((double) (position1.x - position2.x), (double) (position2.y - position1.y))));
-            //buildBody(world, position1, position2);
+            buildBody(world, position1, position2, isSensor);
         }
     }
 
-    public void buildBody(World world, Vector2 position1, Vector2 position2){
+    public void buildBody(World world, Vector2 position1, Vector2 position2, boolean isSensor){
         if(body!=null){
             world.destroyBody(body);
         }
-        BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
 
         bodyDef.position.set(
-                (-(getWidth()/2+20) + getX()) / PIXELS_TO_METERS,
-                (-(getHeight()/2+20) + getY()) / PIXELS_TO_METERS);
+                (-(getWidth()/2+getHeight()/2) + getX()) / PIXELS_TO_METERS,
+                (-(getHeight()) + getY()) / PIXELS_TO_METERS);
 
         body = world.createBody(bodyDef);
 
@@ -70,28 +74,23 @@ public class TrampolineActor extends Actor {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 0.1f;
-        fixtureDef.restitution = 1.9f;
+        fixtureDef.restitution = 1.7f;
         //fixtureDef.filter.categoryBits = PHYSICS_ENTITY;
         //fixtureDef.filter.maskBits = WORLD_ENTITY;
-        fixtureDef.isSensor = false;
+        fixtureDef.isSensor = isSensor;
 
         body.createFixture(fixtureDef);
         body.setUserData(this);
-        float dx,dy;
+
         dx = position2.x - position1.x;
         dy = position2.y - position1.y;
-        Vector2 delta = new Vector2(position2);
+        delta.x = position2.x; delta.y = position2.y;
         delta = delta.sub(position1).limit(maxWidth);
-        Gdx.app.debug("TRAMP","delta: "+delta.toString());
         body.setTransform((position1.x+delta.x/2)/PIXELS_TO_METERS, (position1.y+delta.y/2)/PIXELS_TO_METERS, (float)Math.toRadians(this.getRotation()));
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha){
-        //batch.draw(bodyMiddle, getX()+40f, getY(), getOriginX()-40f, getOriginY(), getWidth()-40f, getHeight(), 1f, 1f, 0, 0, 0, 40, 40, false, false);
-        //batch.draw(bodyBegin, getX(), getY(), getOriginX(), getOriginY(), 40f, getHeight(), 1f, 1f, 0, 0, 0, 40, 40, false, false);
-        //batch.draw(bodyBegin, getX()+getWidth(), getY(), getOriginX()-getWidth(), getOriginY(), 40f, getHeight(), 1f, 1f, 0, 0, 0, 40, 40, true, false);
-
         batch.draw(bodyBegin, getX(), getY(), getOriginX(), getOriginY(), 40f, getHeight(), 1f, 1f, getRotation(), 0, 0, 40, 40, false, false);
         batch.draw(bodyMiddle, getX()+40f, getY(), getOriginX()-40f, getOriginY(), getWidth()-40f, getHeight(), 1f, 1f, getRotation(), 0, 0, 40, 40, false, false);
         batch.draw(bodyBegin, getX()+getWidth(), getY(), getOriginX()-getWidth(), getOriginY(), 40f, getHeight(), 1f, 1f, getRotation(), 0, 0, 40, 40, true, false);
