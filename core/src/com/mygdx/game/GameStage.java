@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
@@ -23,6 +25,14 @@ public class GameStage extends Stage {
     Texture img;
    // List<PhysicsActor> obstacleList = new ArrayList<>();
     private Polandball player;
+    private TrampolineActor trampolineActor;
+
+    Vector2 touchBegin, touchEnd;
+    boolean touchingScreen;
+    float deltaSum = 0f;
+
+    static boolean isPlayerTouchingWall = false, isPlayerTouchingPaddle = false;
+
     public World world;
     private FollowingCamera camera;
     private Camera b2dCamera;
@@ -40,6 +50,11 @@ public class GameStage extends Stage {
 
     public GameStage(Viewport viewport, SpriteBatch batch, FollowingCamera camera , Camera b2dCamera) {
         super(viewport, batch);
+        touchBegin = new Vector2();
+        touchEnd = new Vector2();
+        touchingScreen = false;
+
+
         world = new World(new Vector2(0, -1f),true);
         world.setContactListener(new MyContactListener());
 
@@ -58,6 +73,9 @@ public class GameStage extends Stage {
         player = new Polandball(world, new Vector2(Game.WIDTH/2f-60f, 40f));
         addActor(player);
         camera.setPlayer(player);
+
+        trampolineActor = new TrampolineActor(world, new Vector2(300,300), new Vector2(400,400), "elo", BodyDef.BodyType.KinematicBody, "trampoline");
+        addActor(trampolineActor);
 
         logo = new FadeInOutSprite(Game.content.getTexture("logo"), 0.8f, 0.3f, 800f);
         addActor(logo);
@@ -99,6 +117,21 @@ public class GameStage extends Stage {
         }
         for(Fan fan : fanList)
             fan.update(delta, player);
+
+        deltaSum += delta;
+        if( touchingScreen){// && deltaSum > 0.5f ){
+            deltaSum = 0f;
+            touchEnd.set(Gdx.input.getX(), Gdx.input.getY());
+            touchEnd = screenToStageCoordinates(touchEnd);
+            trampolineActor.buildTrampoline(world, touchBegin, touchEnd);
+            //Gdx.app.debug("TOUCH", "continue, pos: "+touchEnd.toString());
+        }
+        //clench fix
+        if(isPlayerTouchingPaddle && isPlayerTouchingWall && player.body.getLinearVelocity().len()<1f){
+            Gdx.app.debug("CLENCH", "fix?");
+            player.body.applyLinearImpulse(1f, 1f, player.body.getPosition().x, player.body.getPosition().y, true);
+        }
+        //Gdx.app.debug("MyTag", "my debug message");
     }
 
     @Override
@@ -108,6 +141,12 @@ public class GameStage extends Stage {
             logo.hide();
             tapToStart.hide();
             player.start();
+        } else {
+            Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
+            Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
+            touchingScreen = true;
+            touchBegin = stageCoords;
+            Gdx.app.debug("TOUCH", "down, pos: "+stageCoords.toString());
         }
 //        Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
 //        Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
@@ -118,12 +157,13 @@ public class GameStage extends Stage {
 
     @Override
     public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-//        Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
-//        Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
-//        Gdx.app.debug("TOUCH", "  up, pos: "+stageCoords.toString());
-//        player.body.setTransform(stageCoords.x/100.f, stageCoords.y/100.f, player.body.getAngle());
-//        player.body.setActive(true);
-//        player.body.setAwake(true);
+        if(currentMode == Mode.PLAY) {
+            Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
+            Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
+            Gdx.app.debug("TOUCH", "  up, pos: "+stageCoords.toString());
+            trampolineActor.buildBody(world, touchBegin, touchEnd);
+            touchingScreen = false;
+        }
         return super.touchUp(screenX, screenY, pointer, button);
     }
 

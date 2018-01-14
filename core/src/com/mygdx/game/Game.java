@@ -63,7 +63,7 @@ public class Game extends ApplicationAdapter{
 		b2dCam.update();
 		batch.setProjectionMatrix(camera.combined);
 		gameStage.draw();
-		debugRenderer.render(gameStage.world, b2dCam.combined);
+		//debugRenderer.render(gameStage.world, b2dCam.combined);
 	}
 
 	@Override
