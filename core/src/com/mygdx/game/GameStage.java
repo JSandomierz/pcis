@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.sky.Fan;
 import com.mygdx.game.sky.SkyActor;
@@ -27,7 +29,7 @@ public class GameStage extends Stage {
     private SkyActor skyActor;
     private ObstacleActor leftBorder, rightBorder, bottomSensor;
     private FadeInOutSprite logo, tapToStart, tapToTryAgain;
-    private Fan testFan = new Fan(1500, true);
+    private Array<Fan> fanList = new Array<>();
 
     private enum Mode {
         START,
@@ -56,7 +58,6 @@ public class GameStage extends Stage {
         player = new Polandball(world, new Vector2(Game.WIDTH/2f-60f, 40f));
         addActor(player);
         camera.setPlayer(player);
-        addActor(testFan);
 
         logo = new FadeInOutSprite(Game.content.getTexture("logo"), 0.8f, 0.3f, 800f);
         addActor(logo);
@@ -68,19 +69,36 @@ public class GameStage extends Stage {
         tapToStart.show();
     }
 
+
+    public void restart() {
+        camera.restart();
+        player.restart();
+        for(Fan fan : fanList) {
+            fan.remove(world);
+            fan.addAction(Actions.removeActor());
+        }
+        fanList.clear();
+        Fan.restartSpawner();
+    }
+
     @Override
     public void act(float delta){
         super.act(delta);
         if(!player.isLive() && currentMode == Mode.PLAY) {
             currentMode = Mode.TRY_AGAIN;
-            camera.restart();
-            player.restart();
+            restart();
         }
         leftBorder.setY(camera.position.y);
         rightBorder.setY(camera.position.y);
         bottomSensor.setY(camera.position.y - Game.HEIGHT/2f);
         world.step(delta*2f, 6, 2);
-        testFan.update(delta);
+        Fan newFan = Fan.spawnFan(world,camera.position.y + Game.HEIGHT/2f + 300f);
+        if(newFan != null) {
+            fanList.add(newFan);
+            addActor(newFan);
+        }
+        for(Fan fan : fanList)
+            fan.update(delta, player);
     }
 
     @Override

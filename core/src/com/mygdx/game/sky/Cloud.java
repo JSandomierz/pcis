@@ -18,7 +18,7 @@ public class Cloud extends Actor {
     private final static float MOVEMENT_DURATION = 20f;
     private final static Texture cloudsTexture = Game.content.getTexture("clouds");
     private final static TextureRegion[] cloudsRegions = new TextureRegion[CLOUDS_NUM];
-    {
+    static {
         for(int i=0; i<CLOUDS_NUM; ++i)
             cloudsRegions[i] = new TextureRegion(cloudsTexture, i*CLOUD_WIDTH, 0, CLOUD_WIDTH, cloudsTexture.getHeight());
     }
