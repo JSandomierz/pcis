@@ -33,6 +33,8 @@ public class Game extends ApplicationAdapter{
 		content.loadTexture("taptotryagain", "taptotryagain.png");
 		content.loadTexture("palace", "palace.png");
 		content.loadTexture("clouds", "clouds.png");
+		content.loadTexture("fan", "fan.png");
+
 
 		Gdx.app.setLogLevel(Gdx.app.LOG_DEBUG);
 		batch = new SpriteBatch();

@@ -34,13 +34,19 @@ public class MyContactListener implements ContactListener {
                 Gdx.app.debug("Phys", "begin contact body: "+physicsActor);
             }
             Polandball player = null;
-            if(bodya.getUserData().getClass() == Polandball.class)
-                player = (Polandball) bodya.getUserData();
-            else if(bodyb.getUserData().getClass() == Polandball.class)
-                player = (Polandball) bodyb.getUserData();
+            ObstacleActor bottom = null;
 
-            if(player != null) {
-                Gdx.app.log("PLAYER", "GAME OVER");
+            if(bodya.getUserData().getClass() == Polandball.class
+                    && bodyb.getUserData() instanceof  ObstacleActor) {
+                player = (Polandball) bodya.getUserData();
+                bottom = (ObstacleActor) bodyb.getUserData();
+            } else if(bodyb.getUserData().getClass() == Polandball.class
+                    && bodya.getUserData() instanceof  ObstacleActor) {
+                player = (Polandball) bodyb.getUserData();
+                bottom = (ObstacleActor) bodya.getUserData();
+            }
+
+            if(player != null && bottom.label.equals("bottom")) {
                 player.kill();
             }
 
