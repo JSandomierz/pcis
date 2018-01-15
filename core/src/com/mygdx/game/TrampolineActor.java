@@ -36,7 +36,7 @@ public class TrampolineActor extends Actor {
         //buildTrampoline(World world, position1, position2, 0f);
     }
 
-    public void buildTrampoline(World world, Vector2 position1, Vector2 position2, boolean isSensor){
+    public void buildTrampoline(World world, Vector2 position1, Vector2 position2, boolean isSensor, float playerSpeed){
         this.isSensor = isSensor;
         width = position1.dst(position2);
         if( width > height/2f) {
@@ -51,11 +51,11 @@ public class TrampolineActor extends Actor {
             this.setHeight(height);
             this.setOrigin(height/2, height/2);
             this.setRotation(90f + (float) Math.toDegrees(Math.atan2((double) (position1.x - position2.x), (double) (position2.y - position1.y))));
-            buildBody(world, position1, position2, isSensor);
+            buildBody(world, position1, position2, isSensor, playerSpeed);
         }
     }
 
-    public void buildBody(World world, Vector2 position1, Vector2 position2, boolean isSensor){
+    public void buildBody(World world, Vector2 position1, Vector2 position2, boolean isSensor, float playerSpeed){
         if(body!=null){
             world.destroyBody(body);
         }
@@ -74,7 +74,19 @@ public class TrampolineActor extends Actor {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 0.1f;
-        fixtureDef.restitution = 1.7f;
+        double speed = Math.abs(playerSpeed);
+        if(speed>4){
+            fixtureDef.restitution = 1.0f;
+        }else if(speed>3) {
+            fixtureDef.restitution = 1.4f;
+        }else if(speed>2) {
+            fixtureDef.restitution = 1.65f;
+        }else if(speed>1) {
+            fixtureDef.restitution = 1.9f;
+        }else{
+            fixtureDef.restitution = 2.3f;
+        }
+
         //fixtureDef.filter.categoryBits = PHYSICS_ENTITY;
         //fixtureDef.filter.maskBits = WORLD_ENTITY;
         fixtureDef.isSensor = isSensor;

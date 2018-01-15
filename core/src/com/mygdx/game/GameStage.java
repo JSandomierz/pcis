@@ -93,20 +93,20 @@ public class GameStage extends Stage {
         trampolineActor = new TrampolineActor(world, new Vector2(300,300), new Vector2(400,400), "elo", BodyDef.BodyType.KinematicBody, "trampoline");
         addActor(trampolineActor);
 
-        for(int i=0;i<3;i++){//powerups
-            PhysicsActor someBonus = new PhysicsActor(world, new Vector2(Game.WIDTH/2, (float)Math.random()*Game.HEIGHT*2+Game.HEIGHT), "boostup", BodyDef.BodyType.KinematicBody, "boostup", false, true);
+        for(int i=0;i<2;i++){//powerups
+            PhysicsActor someBonus = new PhysicsActor(world, new Vector2(Game.WIDTH/2, (float)(Math.random()*Game.HEIGHT*3.0+Game.HEIGHT*1.5)), "boostup", BodyDef.BodyType.KinematicBody, "boostup", false, true);
             someBonus.setBeginContactAction(new ActorAction<PhysicsActor, Polandball>() {
                 @Override
                 public void commenceOperation(PhysicsActor me, Polandball him) {
                     switch(me.label){
                         case "boostup":
-                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*-0.5),1.0f), him.getBody().getPosition(), true);
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*-0.5),0.9f), him.getBody().getPosition(), true);
                             break;
                         case "boostdown":
-                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()-0.5),-1.0f), him.getBody().getPosition(), true);
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()-0.5),-0.5f), him.getBody().getPosition(), true);
                             break;
                         case "boosthorizontal":
-                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*6.0-3.0),0.5f), him.getBody().getPosition(), true);
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*3.0-1.5),0.3f), him.getBody().getPosition(), true);
                             break;
                     }
                 }
@@ -121,8 +121,8 @@ public class GameStage extends Stage {
             stuffVector.add(someBonus);
         }
 
-        for(int i=0;i<3;i++){//enemies
-            PhysicsActor someBonus = new PhysicsActor(world, new Vector2((float)Math.random()*Game.WIDTH/4+Game.WIDTH/2, (float)Math.random()*Game.HEIGHT*2+Game.HEIGHT), "britishball", BodyDef.BodyType.KinematicBody, "enemy", false, true);
+        for(int i=0;i<2;i++){//enemies
+            PhysicsActor someBonus = new PhysicsActor(world, new Vector2((float)(Math.random()*Game.WIDTH/4.0+Game.WIDTH/2.0), (float)(Math.random()*Game.HEIGHT*4.0+Game.HEIGHT*1.5)), "britishball", BodyDef.BodyType.KinematicBody, "enemy", false, true);
             someBonus.setBeginContactAction(new ActorAction<PhysicsActor, Polandball>() {
                 @Override
                 public void commenceOperation(PhysicsActor me, Polandball him) {
@@ -149,10 +149,10 @@ public class GameStage extends Stage {
     public void resetPhysicalActors(){
         for(PhysicsActor element: stuffVector){
             if(element.label.matches("boost.*")){
-                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, (float)(Math.random()*4.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, (float)(Math.random()*4.0*Game.HEIGHT+Game.HEIGHT*2.0)/100f, 0f );
             }
             if(element.label.equals("enemy")){
-                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, (float)(Math.random()*3.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, (float)(Math.random()*3.0*Game.HEIGHT+Game.HEIGHT*2.0)/100f, 0f );
             }
         }
     }
@@ -209,7 +209,7 @@ public class GameStage extends Stage {
         }
         for(PhysicsActor element: thingsToMoveUp){
             if(element.label.matches("boost.*")){
-                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, element.body.getPosition().y+(float)(Math.random()*4.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, element.body.getPosition().y+(float)(Math.random()*(3.0+player.body.getLinearVelocity().y/2)*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
                 String nextPowerUp = powerupTypes[(int)(Math.random()*10.0)%powerupTypes.length];
                 element.label = nextPowerUp;
                 element.setSpriteTexture( nextPowerUp );
@@ -227,14 +227,14 @@ public class GameStage extends Stage {
         if( touchingScreen ){
             touchEnd.set(input.getX(), input.getY());
             touchEnd = screenToStageCoordinates(touchEnd);
-            trampolineActor.buildTrampoline(world, touchBegin, touchEnd, true);
+            trampolineActor.buildTrampoline(world, touchBegin, touchEnd, true, 0f);
             //deltaSum = 0f;
         }
     }
 
     public void postWorldStep(){
         if(!this.isPlayerTouchingSensorPaddle && touchingScreen){
-            trampolineActor.buildTrampoline(world, touchBegin, touchEnd, false);
+            trampolineActor.buildTrampoline(world, touchBegin, touchEnd, false, player.body.getLinearVelocity().y);
         }
 
         if((!touchingScreen) && isPlayerTouchingPaddle && isPlayerTouchingWall && player.body.getLinearVelocity().len()<1f){
@@ -276,7 +276,7 @@ public class GameStage extends Stage {
         if(currentMode == Mode.PLAY) {
             Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
             Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
-            Gdx.app.debug("TOUCH", "  up, pos: "+stageCoords.toString());
+            Gdx.app.debug("TOUCH", "  up, pos: "+stageCoords.toString()+" player vel: "+player.body.getLinearVelocity().y);
             touchingScreen = false;
             if(Input.Buttons.RIGHT == button){
                 player.body.setTransform(stageCoords.x/100.f, stageCoords.y/100.f, player.body.getAngle());
