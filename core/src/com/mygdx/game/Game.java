@@ -42,6 +42,10 @@ public class Game extends ApplicationAdapter{
 		content.loadTexture("clouds", "clouds.png");
 		content.loadTexture("fan", "fan.png");
 		content.loadTexture("polandball", "polandball.png");
+		content.loadTexture("britishball", "britishball.png");
+		content.loadTexture("boostup", "boostup.png");
+		content.loadTexture("boostdown", "boostdown.png");
+		content.loadTexture("boosthorizontal", "boosthorizontal.png");
 		content.loadTexture("badlogic", "badlogic.jpg");
 		content.loadFont("font.fnt");
 

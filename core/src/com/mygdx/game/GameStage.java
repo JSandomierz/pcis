@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
@@ -15,6 +16,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.sky.Fan;
 import com.mygdx.game.sky.SkyActor;
+
+import java.util.Vector;
 
 import static com.badlogic.gdx.Gdx.input;
 
@@ -46,6 +49,9 @@ public class GameStage extends Stage {
     private Array<Fan> fanList = new Array<>();
     private Stage hud;
     private ScoreText scoreText;
+    private Vector<PhysicsActor> stuffVector = new Vector<>();
+    private Vector<PhysicsActor> thingsToMoveUp = new Vector<>();
+    private String[] powerupTypes = {"boostup", "boostdown", "boosthorizontal"};
 
     private enum Mode {
         START,
@@ -62,7 +68,6 @@ public class GameStage extends Stage {
         touchBegin = new Vector2();
         touchEnd = new Vector2();
         touchingScreen = false;
-
 
         world = new World(new Vector2(0, -1.5f),true);
         world.setContactListener(new MyContactListener());
@@ -88,16 +93,45 @@ public class GameStage extends Stage {
         trampolineActor = new TrampolineActor(world, new Vector2(300,300), new Vector2(400,400), "elo", BodyDef.BodyType.KinematicBody, "trampoline");
         addActor(trampolineActor);
 
-        PhysicsActor someBonus = new PhysicsActor(world, new Vector2(Game.WIDTH/2, Game.HEIGHT/2), "badlogic", BodyDef.BodyType.KinematicBody, "bonusBGC", false, true);
-        someBonus.setEndContactAction(new ActorAction<PhysicsActor, Polandball>() {
-            @Override
-            public void commenceOperation(PhysicsActor me, Polandball him) {
-                him.getBody().applyLinearImpulse(new Vector2(10f,0), him.getBody().getPosition(), true);
-                //world.destroyBody(me.body);//must create NOTIFY DESTROY
-                me.setEndContactAction(null);
-            }
-        });
-        addActor(someBonus);
+        for(int i=0;i<3;i++){//powerups
+            PhysicsActor someBonus = new PhysicsActor(world, new Vector2(Game.WIDTH/2, (float)Math.random()*Game.HEIGHT*2+Game.HEIGHT), "boostup", BodyDef.BodyType.KinematicBody, "boostup", false, true);
+            someBonus.setBeginContactAction(new ActorAction<PhysicsActor, Polandball>() {
+                @Override
+                public void commenceOperation(PhysicsActor me, Polandball him) {
+                    switch(me.label){
+                        case "boostup":
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*2.0-1.0),1.2f), him.getBody().getPosition(), true);
+                            break;
+                        case "boostdown":
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*2.0-1.0),-1.2f), him.getBody().getPosition(), true);
+                            break;
+                        case "boosthorizontal":
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*8.0-4.0),0.5f), him.getBody().getPosition(), true);
+                            break;
+                    }
+                }
+            });
+            someBonus.setEndContactAction(new ActorAction<PhysicsActor, Polandball>() {
+                @Override
+                public void commenceOperation(PhysicsActor me, Polandball him) {
+                    thingsToMoveUp.add(me);
+                }
+            });
+            addActor(someBonus);
+            stuffVector.add(someBonus);
+        }
+
+        for(int i=0;i<3;i++){//enemies
+            PhysicsActor someBonus = new PhysicsActor(world, new Vector2((float)Math.random()*Game.WIDTH/4+Game.WIDTH/2, (float)Math.random()*Game.HEIGHT*2+Game.HEIGHT), "britishball", BodyDef.BodyType.KinematicBody, "enemy", false, true);
+            someBonus.setBeginContactAction(new ActorAction<PhysicsActor, Polandball>() {
+                @Override
+                public void commenceOperation(PhysicsActor me, Polandball him) {
+                    him.kill();
+                }
+            });
+            addActor(someBonus);
+            stuffVector.add(someBonus);
+        }
 
         logo = new FadeInOutSprite(Game.content.getTexture("logo"), 0.8f, 0.3f, 800f);
         this.hud.addActor(logo);
@@ -112,6 +146,16 @@ public class GameStage extends Stage {
         tapToStart.show();
     }
 
+    public void resetPhysicalActors(){
+        for(PhysicsActor element: stuffVector){
+            if(element.label.matches("boost.*")){
+                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, (float)(Math.random()*4.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+            }
+            if(element.label.equals("enemy")){
+                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, (float)(Math.random()*3.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+            }
+        }
+    }
 
     public void restart() {
         camera.restart();
@@ -121,7 +165,9 @@ public class GameStage extends Stage {
             fan.addAction(Actions.removeActor());
         }
         fanList.clear();
+        trampolineActor.restart();
         Fan.restartSpawner();
+        resetPhysicalActors();
     }
 
     private boolean saveHighscore() {
@@ -156,6 +202,23 @@ public class GameStage extends Stage {
         }
         for(Fan fan : fanList)
             fan.update(delta, player);
+
+
+        for(PhysicsActor element: stuffVector){
+            if(element.body.getPosition().y < bottomSensor.body.getPosition().y) thingsToMoveUp.add(element);
+        }
+        for(PhysicsActor element: thingsToMoveUp){
+            if(element.label.matches("boost.*")){
+                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, element.body.getPosition().y+(float)(Math.random()*4.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+                String nextPowerUp = powerupTypes[(int)(Math.random()*10.0)%powerupTypes.length];
+                element.label = nextPowerUp;
+                element.setSpriteTexture( nextPowerUp );
+            }
+            if(element.label.equals("enemy")){
+                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, element.body.getPosition().y+(float)(Math.random()*3.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+            }
+        }
+        thingsToMoveUp.clear();
         //Gdx.app.debug("MyTag", "my debug message");
     }
 

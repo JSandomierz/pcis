@@ -56,6 +56,14 @@ public class MyContactListener implements ContactListener {
                 bottom = (ObstacleActor) bodya.getUserData();
             }
 
+            if(bodyb.getUserData() instanceof PhysicsActor && bodya.getUserData() instanceof Polandball){
+                //Gdx.app.debug("Phys", "end contact body: "+physicsActor);
+                ((PhysicsActor) bodyb.getUserData()).reactToBeginContact((PhysicsActor)(bodyb.getUserData()), (Polandball)(bodya.getUserData()) );
+            }else if(bodya.getUserData() instanceof PhysicsActor && bodyb.getUserData() instanceof Polandball){
+                //Gdx.app.debug("Phys", "end contact body: "+physicsActor);
+                ((PhysicsActor) bodya.getUserData()).reactToBeginContact((PhysicsActor)(bodya.getUserData()), (Polandball)(bodyb.getUserData()) );
+            }
+
             if(player != null && bottom.label.equals("bottom")) {
                 player.kill();
             }
