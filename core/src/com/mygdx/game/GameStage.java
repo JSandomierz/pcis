@@ -80,6 +80,17 @@ public class GameStage extends Stage {
         trampolineActor = new TrampolineActor(world, new Vector2(300,300), new Vector2(400,400), "elo", BodyDef.BodyType.KinematicBody, "trampoline");
         addActor(trampolineActor);
 
+        PhysicsActor someBonus = new PhysicsActor(world, new Vector2(Game.WIDTH/2, Game.HEIGHT/2), "badlogic.jpg", BodyDef.BodyType.KinematicBody, "bonusBGC", false, true);
+        someBonus.setEndContactAction(new ActorAction<PhysicsActor, Polandball>() {
+            @Override
+            public void commenceOperation(PhysicsActor me, Polandball him) {
+                him.getBody().applyLinearImpulse(new Vector2(10f,0), him.getBody().getPosition(), true);
+                //world.destroyBody(me.body);//must create NOTIFY DESTROY
+                me.setEndContactAction(null);
+            }
+        });
+        addActor(someBonus);
+
         logo = new FadeInOutSprite(Game.content.getTexture("logo"), 0.8f, 0.3f, 800f);
         addActor(logo);
 

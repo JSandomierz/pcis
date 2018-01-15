@@ -16,7 +16,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 public class MyContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
-        Gdx.app.debug("Phys", "begin contact");
+        //Gdx.app.debug("Phys", "begin contact");
         Body bodyb = contact.getFixtureB().getBody();
         Body bodya = contact.getFixtureA().getBody();
         //body.applyLinearImpulse(0f, 1f, body.getPosition().x, body.getPosition().y, true);
@@ -74,18 +74,21 @@ public class MyContactListener implements ContactListener {
                 ObstacleActor obstacle = (ObstacleActor)bodya.getUserData();
                 GameStage.isPlayerTouchingWall = false;
                 //Gdx.app.debug("Phys", "end collision with obstacle: "+obstacle.label);
+            }else if(bodya.getUserData().getClass() == ObstacleActor.class){
+                ObstacleActor obstacle = (ObstacleActor)bodyb.getUserData();
+                GameStage.isPlayerTouchingWall = false;
             }
+
             if(bodya.getUserData().getClass() == TrampolineActor.class || bodyb.getUserData().getClass() == TrampolineActor.class){
                 GameStage.isPlayerTouchingPaddle = false;
             }
-            if(bodyb.getUserData().getClass() == ObstacleActor.class){
-                ObstacleActor obstacle = (ObstacleActor)bodyb.getUserData();
-                GameStage.isPlayerTouchingWall = false;
-                //Gdx.app.debug("Phys", "end collision with obstacle: "+obstacle.label);
-            }
-            if(bodyb.getUserData().getClass() == PhysicsActor.class){
-                PhysicsActor physicsActor = ((PhysicsActor)bodyb.getUserData());
+
+            if(bodyb.getUserData() instanceof PhysicsActor && bodya.getUserData() instanceof Polandball){
                 //Gdx.app.debug("Phys", "end contact body: "+physicsActor);
+                ((PhysicsActor) bodyb.getUserData()).reactToEndContact((PhysicsActor)(bodyb.getUserData()), (Polandball)(bodya.getUserData()) );
+            }else if(bodya.getUserData() instanceof PhysicsActor && bodyb.getUserData() instanceof Polandball){
+                //Gdx.app.debug("Phys", "end contact body: "+physicsActor);
+                ((PhysicsActor) bodya.getUserData()).reactToEndContact((PhysicsActor)(bodya.getUserData()), (Polandball)(bodyb.getUserData()) );
             }
         }
     }

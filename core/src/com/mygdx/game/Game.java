@@ -39,7 +39,7 @@ public class Game extends ApplicationAdapter{
 		Gdx.app.setLogLevel(Gdx.app.LOG_DEBUG);
 		batch = new SpriteBatch();
 		camera = new FollowingCamera();
-		viewport = new ExtendViewport(WIDTH, HEIGHT, camera);
+		viewport = new StretchViewport(WIDTH, HEIGHT, camera);//new ExtendViewport(WIDTH, HEIGHT, camera);
 
 
 		debugRenderer = new Box2DDebugRenderer();

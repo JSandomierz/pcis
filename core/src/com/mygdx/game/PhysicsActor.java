@@ -29,8 +29,9 @@ public class PhysicsActor extends Actor {
     Sprite sprite;
     Body body;
     public String label;
+    private ActorAction<PhysicsActor, Polandball> endContactAction;
 
-    public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label, boolean isRound){
+    public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label, boolean isRound, boolean isSensor){
         prepareBody(world, position, textureName, bodyType, label);
         Shape shape;
         if(isRound){
@@ -41,15 +42,30 @@ public class PhysicsActor extends Actor {
             ((PolygonShape)shape).setAsBox(sprite.getWidth()/2 / PIXELS_TO_METERS, sprite.getHeight()
                     /2 / PIXELS_TO_METERS);
         }
-        createFixture(shape);
+        createFixture(shape, isSensor);
     }
 
-    public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label, Vector2[] vertices){
+    public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label, Vector2[] vertices, boolean isSensor){
         prepareBody(world, position, textureName, bodyType, label);
-        createFixture(vertices);
+        createFixture(vertices, isSensor);
+    }
+
+    public void reactToEndContact(PhysicsActor me, Polandball him){
+        if(endContactAction!=null) endContactAction.commenceOperation(me, him);
+    }
+
+    public void setEndContactAction(ActorAction action){
+        this.endContactAction = action;
     }
 
     private void prepareBody(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label){
+        endContactAction = new ActorAction<PhysicsActor, Polandball>() {
+            @Override
+            public void commenceOperation(PhysicsActor me, Polandball him) {
+                //nothing to do here, empty action
+                Gdx.app.debug("ACTORACTION", "pxm: "+me.PIXELS_TO_METERS);
+            }
+        };
         this.label = label;
         Texture texture = new Texture(textureName);
         sprite = new Sprite(texture);
@@ -65,17 +81,18 @@ public class PhysicsActor extends Actor {
         body.setUserData(this);
     }
 
-    public void createFixture(Shape shape){
+    public void createFixture(Shape shape, boolean isSensor){
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 0.1f;
         fixtureDef.restitution = 0.5f;
+        fixtureDef.isSensor = isSensor;
         //fixtureDef.filter.categoryBits = PHYSICS_ENTITY;
         //fixtureDef.filter.maskBits = WORLD_ENTITY;
         body.createFixture(fixtureDef);
     }
 
-    public void createFixture(Vector2[] vertices){
+    public void createFixture(Vector2[] vertices, boolean isSensor){
         for(Vector2 v: vertices){
             v.x /= PIXELS_TO_METERS;
             v.y /= PIXELS_TO_METERS;
@@ -87,6 +104,7 @@ public class PhysicsActor extends Actor {
         fixtureDef.shape = shape;
         fixtureDef.density = 0.1f;
         fixtureDef.restitution = 0.5f;
+        fixtureDef.isSensor = isSensor;
         //fixtureDef.filter.categoryBits = PHYSICS_ENTITY;
         //fixtureDef.filter.maskBits = WORLD_ENTITY;
         body.createFixture(fixtureDef);
