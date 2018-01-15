@@ -92,13 +92,13 @@ public class GameStage extends Stage {
                 public void commenceOperation(PhysicsActor me, Polandball him) {
                     switch(me.label){
                         case "boostup":
-                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*2.0-1.0),1.2f), him.getBody().getPosition(), true);
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*-0.5),1.0f), him.getBody().getPosition(), true);
                             break;
                         case "boostdown":
-                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*2.0-1.0),-1.2f), him.getBody().getPosition(), true);
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()-0.5),-1.0f), him.getBody().getPosition(), true);
                             break;
                         case "boosthorizontal":
-                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*8.0-4.0),0.5f), him.getBody().getPosition(), true);
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*6.0-3.0),0.5f), him.getBody().getPosition(), true);
                             break;
                     }
                 }
@@ -154,7 +154,7 @@ public class GameStage extends Stage {
             fan.addAction(Actions.removeActor());
         }
         fanList.clear();
-        trampolineActor.restart();
+        trampolineActor.restart(world);
         Fan.restartSpawner();
         resetPhysicalActors();
     }
