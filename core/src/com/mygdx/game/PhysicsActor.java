@@ -29,7 +29,7 @@ public class PhysicsActor extends Actor {
     Sprite sprite;
     Body body;
     public String label;
-    private ActorAction<PhysicsActor, Polandball> endContactAction;
+    private ActorAction<PhysicsActor, Polandball> beginContactAction, endContactAction;
 
     public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label, boolean isRound, boolean isSensor){
         prepareBody(world, position, textureName, bodyType, label);
@@ -50,16 +50,27 @@ public class PhysicsActor extends Actor {
         createFixture(vertices, isSensor);
     }
 
+    public void setSpriteTexture(String textureName){
+        sprite.setTexture( Game.content.getTexture(textureName) );
+    }
+
+    public void reactToBeginContact(PhysicsActor me, Polandball him){
+        if(beginContactAction!=null) beginContactAction.commenceOperation(me, him);
+    }
+
     public void reactToEndContact(PhysicsActor me, Polandball him){
         if(endContactAction!=null) endContactAction.commenceOperation(me, him);
     }
 
+    public void setBeginContactAction(ActorAction action){
+        this.beginContactAction = action;
+    }
     public void setEndContactAction(ActorAction action){
         this.endContactAction = action;
     }
 
     private void prepareBody(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label){
-        endContactAction = new ActorAction<PhysicsActor, Polandball>() {
+        beginContactAction = new ActorAction<PhysicsActor, Polandball>() {
             @Override
             public void commenceOperation(PhysicsActor me, Polandball him) {
                 //nothing to do here, empty action

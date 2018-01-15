@@ -89,6 +89,11 @@ public class TrampolineActor extends Actor {
         body.setTransform((position1.x+delta.x/2)/PIXELS_TO_METERS, (position1.y+delta.y/2)/PIXELS_TO_METERS, (float)Math.toRadians(this.getRotation()));
     }
 
+    public void restart(){
+        body.setTransform(-10,-10,0);
+        setPosition(-100, -100);
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha){
         batch.draw(bodyBegin, getX(), getY(), getOriginX(), getOriginY(), 40f, getHeight(), 1f, 1f, getRotation(), 0, 0, 40, 40, false, false);
