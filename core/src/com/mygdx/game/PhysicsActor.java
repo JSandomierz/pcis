@@ -67,8 +67,7 @@ public class PhysicsActor extends Actor {
             }
         };
         this.label = label;
-        Texture texture = new Texture(textureName);
-        sprite = new Sprite(texture);
+        sprite = new Sprite(Game.content.getTexture(textureName));
         setSize(sprite.getWidth(), sprite.getHeight());
         setOrigin(Align.center);
         //setPosition((-sprite.getWidth()/2)+position.x,-sprite.getHeight()/2 +position.y);
