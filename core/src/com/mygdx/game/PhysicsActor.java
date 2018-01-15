@@ -139,5 +139,4 @@ public class PhysicsActor extends Actor {
         body.setTransform((x+sprite.getWidth()/2f)/Game.PPM, body.getPosition().y, body.getAngle());
     }
 
-
 }

@@ -135,6 +135,16 @@ public class GameStage extends Stage {
         tapToStart.show();
     }
 
+    public void resetPhysicalActors(){
+        for(PhysicsActor element: stuffVector){
+            if(element.label.matches("boost.*")){
+                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, (float)(Math.random()*4.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+            }
+            if(element.label.equals("enemy")){
+                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, (float)(Math.random()*3.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+            }
+        }
+    }
 
     public void restart() {
         camera.restart();
@@ -146,6 +156,7 @@ public class GameStage extends Stage {
         fanList.clear();
         trampolineActor.restart();
         Fan.restartSpawner();
+        resetPhysicalActors();
     }
 
     @Override
@@ -176,8 +187,6 @@ public class GameStage extends Stage {
             if(element.body.getPosition().y < bottomSensor.body.getPosition().y) thingsToMoveUp.add(element);
         }
         for(PhysicsActor element: thingsToMoveUp){
-            Vector2 currentPosition = new Vector2();
-
             if(element.label.matches("boost.*")){
                 element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, element.body.getPosition().y+(float)(Math.random()*4.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
                 String nextPowerUp = powerupTypes[(int)(Math.random()*10.0)%powerupTypes.length];
