@@ -20,7 +20,7 @@ import com.mygdx.game.Polandball;
 public class Fan extends Actor {
     private final static int FRAMES_NUM = 3;
     private final static float INTERVAL = 0.1f;
-    private final static float WIND_FORCE = 0.5f;
+    private final static float WIND_FORCE = 0.3f;
     private static int FRAME_WIDTH;
     private static Texture texture = Game.content.getTexture("fan");
     private static TextureRegion[] frames = new TextureRegion[FRAMES_NUM];
