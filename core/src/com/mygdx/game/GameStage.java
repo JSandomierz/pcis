@@ -245,7 +245,8 @@ public class GameStage extends Stage {
 
     @Override
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-        if(currentMode == Mode.START || currentMode == Mode.TRY_AGAIN) {
+        boolean actionsFinished = logo.getActions().size == 0 && tapToStart.getActions().size == 0 && gameover.getActions().size == 0;
+        if((currentMode == Mode.START || currentMode == Mode.TRY_AGAIN) && actionsFinished) {
             if(currentMode == Mode.TRY_AGAIN) {
                 gameover.hide();
                 restart();

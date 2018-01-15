@@ -26,6 +26,7 @@ public class Gameover extends FadeInOutSprite {
     @Override
     public void draw(Batch batch, float alpha) {
         super.draw(batch, alpha);
+
         font.setColor(1f, 1f, 1f, getColor().a);
         String str = "Highscore: " + String.valueOf(Game.prefs.getInteger("highscore"));
         layout.setText(font, str);
