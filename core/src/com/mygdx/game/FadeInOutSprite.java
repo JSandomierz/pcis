@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
  */
 
 public class FadeInOutSprite extends Actor {
-    private Sprite sprite;
+    protected Sprite sprite;
     private float fadeInDuration;
     private float fadeOutDuration;
     public FadeInOutSprite(Texture texture, float fadeInDuration, float fadeOutDuration, float y) {

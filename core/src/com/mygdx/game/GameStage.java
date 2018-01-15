@@ -41,8 +41,11 @@ public class GameStage extends Stage {
     private Camera b2dCamera;
     private SkyActor skyActor;
     private ObstacleActor leftBorder, rightBorder, bottomSensor;
-    private FadeInOutSprite logo, tapToStart, tapToTryAgain;
+    private FadeInOutSprite logo, tapToStart;
+    private Gameover gameover;
     private Array<Fan> fanList = new Array<>();
+    private Stage hud;
+    private ScoreText scoreText;
 
     private enum Mode {
         START,
@@ -51,8 +54,11 @@ public class GameStage extends Stage {
     }
     private Mode currentMode = Mode.START;
 
-    public GameStage(Viewport viewport, SpriteBatch batch, FollowingCamera camera , Camera b2dCamera) {
+    public GameStage(Viewport viewport, SpriteBatch batch, FollowingCamera camera , Camera b2dCamera, Stage hud) {
         super(viewport, batch);
+
+        this.hud = hud;
+
         touchBegin = new Vector2();
         touchEnd = new Vector2();
         touchingScreen = false;
@@ -76,6 +82,8 @@ public class GameStage extends Stage {
         player = new Polandball(world, new Vector2(Game.WIDTH/2f-60f, 40f));
         addActor(player);
         camera.setPlayer(player);
+        scoreText = new ScoreText(player);
+        this.hud.addActor(scoreText);
 
         trampolineActor = new TrampolineActor(world, new Vector2(300,300), new Vector2(400,400), "elo", BodyDef.BodyType.KinematicBody, "trampoline");
         addActor(trampolineActor);
@@ -92,10 +100,13 @@ public class GameStage extends Stage {
         addActor(someBonus);
 
         logo = new FadeInOutSprite(Game.content.getTexture("logo"), 0.8f, 0.3f, 800f);
-        addActor(logo);
+        this.hud.addActor(logo);
 
         tapToStart = new FadeInOutSprite(Game.content.getTexture("taptostart"), 0.9f, 0.3f, 500f);
-        addActor(tapToStart);
+        this.hud.addActor(tapToStart);
+
+        gameover = new Gameover(0.9f, 0.3f, 500f);
+        this.hud.addActor(gameover);
 
         logo.show();
         tapToStart.show();
@@ -113,12 +124,22 @@ public class GameStage extends Stage {
         Fan.restartSpawner();
     }
 
+    private boolean saveHighscore() {
+        int currentHighscore = Game.prefs.getInteger("highscore", 0);
+        if(player.getScore() > currentHighscore) {
+            Game.prefs.putInteger("highscore", player.getScore());
+            Game.prefs.flush();
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void act(float delta){
         super.act(delta);
         if(!player.isLive() && currentMode == Mode.PLAY) {
             currentMode = Mode.TRY_AGAIN;
-            restart();
+            gameover.show(saveHighscore());
         }
         leftBorder.setY(camera.position.y);
         rightBorder.setY(camera.position.y);
@@ -162,6 +183,10 @@ public class GameStage extends Stage {
     @Override
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
         if(currentMode == Mode.START || currentMode == Mode.TRY_AGAIN) {
+            if(currentMode == Mode.TRY_AGAIN) {
+                gameover.hide();
+                restart();
+            }
             currentMode = Mode.PLAY;
             logo.hide();
             tapToStart.hide();
