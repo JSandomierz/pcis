@@ -94,7 +94,7 @@ public class GameStage extends Stage {
         addActor(trampolineActor);
 
         for(int i=0;i<2;i++){//powerups
-            PhysicsActor someBonus = new PhysicsActor(world, new Vector2(Game.WIDTH/2, (float)(Math.random()*Game.HEIGHT*3.0+Game.HEIGHT*1.5)), "boostup", BodyDef.BodyType.KinematicBody, "boostup", false, true);
+            PhysicsActor someBonus = new PhysicsActor(world, new Vector2(Game.WIDTH/2, (float)(Math.random()*Game.HEIGHT*3.0+Game.HEIGHT*1.5)), "boostup", BodyDef.BodyType.KinematicBody, "boostup", false, 0f, true);
             someBonus.setBeginContactAction(new ActorAction<PhysicsActor, Polandball>() {
                 @Override
                 public void commenceOperation(PhysicsActor me, Polandball him) {
@@ -122,7 +122,7 @@ public class GameStage extends Stage {
         }
 
         for(int i=0;i<2;i++){//enemies
-            PhysicsActor someBonus = new PhysicsActor(world, new Vector2((float)(Math.random()*Game.WIDTH/4.0+Game.WIDTH/2.0), (float)(Math.random()*Game.HEIGHT*4.0+Game.HEIGHT*1.5)), "britishball", BodyDef.BodyType.KinematicBody, "enemy", false, true);
+            PhysicsActor someBonus = new PhysicsActor(world, new Vector2((float)(Math.random()*Game.WIDTH/4.0+Game.WIDTH/2.0), (float)(Math.random()*Game.HEIGHT*4.0+Game.HEIGHT*1.5)), "britishball", BodyDef.BodyType.KinematicBody, "enemy", true, 40f, true);
             someBonus.setBeginContactAction(new ActorAction<PhysicsActor, Polandball>() {
                 @Override
                 public void commenceOperation(PhysicsActor me, Polandball him) {

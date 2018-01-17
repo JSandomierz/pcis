@@ -14,7 +14,7 @@ public class Polandball extends PhysicsActor {
     private boolean live = true;
     private int maxHeight = 0;
     public Polandball(World world, Vector2 position) {
-        super(world, position, "polandball", BodyDef.BodyType.DynamicBody, "player", true, false);
+        super(world, position, "polandball", BodyDef.BodyType.DynamicBody, "player", true, 60f, false);
         startPos = new Vector2(position);
         body.setAwake(false);
         body.setActive(false);

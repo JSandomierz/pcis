@@ -74,9 +74,9 @@ public class Game extends ApplicationAdapter{
 
 		gameStage.act(Gdx.graphics.getDeltaTime());
 		hud.act(Gdx.graphics.getDeltaTime());
-		b2dCam.position.y = camera.position.y/PPM;
+		//b2dCam.position.y = camera.position.y/PPM;
 		camera.update();
-		b2dCam.update();
+		//b2dCam.update();
 		batch.setProjectionMatrix(camera.combined);
 		gameStage.draw();
 		batch.setProjectionMatrix(hudCamera.combined);
