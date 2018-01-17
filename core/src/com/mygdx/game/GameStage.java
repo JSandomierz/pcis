@@ -192,9 +192,8 @@ public class GameStage extends Stage {
         bottomSensor.setY(camera.position.y - Game.HEIGHT/2f);
 
         preWorldStep();//setup sensor
-        world.step(delta*2f, 6, 2);
+        world.step(delta * 2f, 6, 2);
         postWorldStep();//transform sensor to solid paddle is sensor does not detect collision
-
         Fan newFan = Fan.spawnFan(world,camera.position.y + Game.HEIGHT/2f + 300f);
         if(newFan != null) {
             fanList.add(newFan);
@@ -255,7 +254,7 @@ public class GameStage extends Stage {
             logo.hide();
             tapToStart.hide();
             player.start();
-        } else {
+        } else if(currentMode == Mode.PLAY){
             Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
             Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
             if( Input.Buttons.LEFT ==  button && stageCoords.dst(player.getX(), player.getY()) > player.body.getFixtureList().get(0).getShape().getRadius()){
