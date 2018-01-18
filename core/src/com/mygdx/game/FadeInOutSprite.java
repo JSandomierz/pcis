@@ -30,6 +30,10 @@ public class FadeInOutSprite extends Actor {
         addAction(Actions.fadeOut(fadeOutDuration));
     }
 
+    public void updateTexture(Texture tex){
+        sprite.setTexture(tex);
+    }
+
     @Override
     public void draw(Batch batch, float alpha) {
         batch.setColor(1f,1f,1f, getColor().a);

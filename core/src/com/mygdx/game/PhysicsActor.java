@@ -24,9 +24,10 @@ import javax.swing.GroupLayout;
  * Created by Jakub on 2018-01-09.
  */
 
-public class PhysicsActor extends Actor {
+public class PhysicsActor extends Actor{
     private static final float PIXELS_TO_METERS = 100f;
     Sprite sprite;
+    private String textureName;
     Body body;
     public String label;
     private ActorAction<PhysicsActor, Polandball> beginContactAction, endContactAction;
@@ -70,6 +71,7 @@ public class PhysicsActor extends Actor {
     }
 
     private void prepareBody(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label){
+        this.textureName = textureName;
         beginContactAction = new ActorAction<PhysicsActor, Polandball>() {
             @Override
             public void commenceOperation(PhysicsActor me, Polandball him) {
@@ -126,6 +128,7 @@ public class PhysicsActor extends Actor {
                             (body.getPosition().y * Game.PPM) - sprite.getHeight()/2 );
 
         setRotation((float)Math.toDegrees(body.getAngle()));
+        sprite.setTexture(Game.content.getTexture(textureName));
         batch.draw(sprite, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(),1f,1f,getRotation());
     }
 

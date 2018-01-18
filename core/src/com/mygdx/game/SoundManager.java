@@ -27,8 +27,6 @@ public class SoundManager {
     public static void playSingle(String soundName) {
         playSingle(soundName, 1f);
     }
-
-
         public static void playBackgroundMusic() {
         Music music = Game.content.getMusic();
         music.setLooping(true);

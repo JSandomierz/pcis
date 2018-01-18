@@ -36,6 +36,14 @@ public class Fan extends Actor {
         }
         restartSpawner();
     }
+    public static void reloadFans(){
+        texture = Game.content.getTexture("fan");
+        for(int i=0; i<FRAMES_NUM; ++i) {
+            frames[i] = new TextureRegion(texture, FRAME_WIDTH * i, 0, FRAME_WIDTH, texture.getHeight());
+            flippedFrames[i] = new TextureRegion(texture, FRAME_WIDTH * i, 0, FRAME_WIDTH, texture.getHeight());
+            flippedFrames[i].flip(true, false);
+        }
+    }
     private int currentFrame = 0;
     private float time = 0f;
     private boolean flipped;

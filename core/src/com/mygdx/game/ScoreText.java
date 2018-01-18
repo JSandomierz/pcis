@@ -16,6 +16,10 @@ public class ScoreText extends Actor {
         this.polandball = polandball;
     }
 
+    public void updateTextures(){
+        font = Game.content.getFont();
+    }
+
     @Override
     public void draw(Batch batch, float alpha){
         font.draw(batch, String.format("%06d", polandball.getScore()), 10f, Game.HEIGHT-10f);

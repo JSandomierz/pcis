@@ -46,6 +46,9 @@ public class SkyActor extends Group {
         }
     }
 
+    public void updateTexture(){
+        bgSprite.setTexture(Game.content.getTexture("palace"));
+    }
 
     @Override
     public void draw(Batch batch, float alpha) {

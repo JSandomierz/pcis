@@ -23,6 +23,10 @@ public class Gameover extends FadeInOutSprite {
         newRecordWidth = layout.width;
     }
 
+    public void updateTextures(){
+        font = Game.content.getFont();
+    }
+
     public void show(boolean newRecord) {
         this.newRecord = newRecord;
         highScoreString = "Highscore: " + String.valueOf(Game.prefs.getInteger("highscore"));

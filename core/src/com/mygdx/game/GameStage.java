@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.sky.Cloud;
 import com.mygdx.game.sky.Fan;
 import com.mygdx.game.sky.SkyActor;
 
@@ -314,6 +315,16 @@ public class GameStage extends Stage {
             player.body.applyLinearImpulse(new Vector2(0f, -1f), player.body.getPosition(), true);
         }
         return super.keyDown(keyCode);
+    }
+
+    public void reloadContent(){
+        Fan.reloadFans();
+        Cloud.reloadClouds();
+        skyActor.updateTexture();
+        logo.updateTexture(Game.content.getTexture("logo"));
+        tapToStart.updateTexture(Game.content.getTexture("taptostart"));
+        gameover.updateTextures();
+        scoreText.updateTextures();
     }
 
     @Override

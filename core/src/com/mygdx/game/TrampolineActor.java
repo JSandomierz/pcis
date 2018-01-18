@@ -24,15 +24,15 @@ public class TrampolineActor extends Actor {
     Body body;
     boolean isSensor = false;
     public String label;
-    Texture bodyMiddle, bodyBegin;
     BodyDef bodyDef = new BodyDef();
     float height = 40, width;
     float dx,dy;
     Vector2 delta = new Vector2();
+    private String textureNameBegin, textureNameEnd;
 
     public TrampolineActor(World world, Vector2 position1, Vector2 position2, String textureName, BodyDef.BodyType bodyType, String label) {
-        bodyBegin = new Texture(Gdx.files.internal("paddle_beg2.png"));
-        bodyMiddle =  new Texture(Gdx.files.internal("paddle_mid.png"));
+        textureNameBegin = "paddle_beg2";
+        textureNameEnd = "paddle_mid";
         //buildTrampoline(World world, position1, position2, 0f);
     }
 
@@ -111,8 +111,8 @@ public class TrampolineActor extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha){
-        batch.draw(bodyBegin, getX(), getY(), getOriginX(), getOriginY(), 40f, getHeight(), 1f, 1f, getRotation(), 0, 0, 40, 40, false, false);
-        batch.draw(bodyMiddle, getX()+40f, getY(), getOriginX()-40f, getOriginY(), getWidth()-40f, getHeight(), 1f, 1f, getRotation(), 0, 0, 40, 40, false, false);
-        batch.draw(bodyBegin, getX()+getWidth(), getY(), getOriginX()-getWidth(), getOriginY(), 40f, getHeight(), 1f, 1f, getRotation(), 0, 0, 40, 40, true, false);
+        batch.draw(Game.content.getTexture(textureNameBegin), getX(), getY(), getOriginX(), getOriginY(), 40f, getHeight(), 1f, 1f, getRotation(), 0, 0, 40, 40, false, false);
+        batch.draw(Game.content.getTexture(textureNameEnd), getX()+40f, getY(), getOriginX()-40f, getOriginY(), getWidth()-40f, getHeight(), 1f, 1f, getRotation(), 0, 0, 40, 40, false, false);
+        batch.draw(Game.content.getTexture(textureNameBegin), getX()+getWidth(), getY(), getOriginX()-getWidth(), getOriginY(), 40f, getHeight(), 1f, 1f, getRotation(), 0, 0, 40, 40, true, false);
     }
 }
