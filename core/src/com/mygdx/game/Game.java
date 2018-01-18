@@ -47,7 +47,19 @@ public class Game extends ApplicationAdapter{
 		content.loadTexture("boostdown", "boostdown.png");
 		content.loadTexture("boosthorizontal", "boosthorizontal.png");
 		content.loadTexture("badlogic", "badlogic.jpg");
+		content.loadSound("jump", 240, "boink.wav");
+		content.loadSound("bounce", 185, "bounce.wav");
+		content.loadSound("gameover",  "gameover.wav");
+		content.loadSound("powerup",  "powerup.wav");
+		content.loadSound("click", 65, "click.wav");
+		content.loadSound("blow", 250, "blow.wav");
+
+
+		content.loadSound("shot", "shot.wav");
+
+
 		content.loadFont("font.fnt");
+		content.loadMusic("music.mp3");
 
 		content.waitForLoad();
 
@@ -87,12 +99,18 @@ public class Game extends ApplicationAdapter{
 	@Override
 	public void dispose () {
 		batch.dispose();
+		content.dispose();
 	}
 
 	@Override
 	public void resize (int width, int height) {
 		// viewport must be updated for it to work properly
 		viewport.update(width, height);
+	}
+
+	@Override
+	public void resume () {
+		content.waitForLoad();
 	}
 
 }

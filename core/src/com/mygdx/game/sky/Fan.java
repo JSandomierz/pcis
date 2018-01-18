@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mygdx.game.Game;
 import com.mygdx.game.Polandball;
+import com.mygdx.game.SoundManager;
 
 /**
  * Created by szostak on 1/13/18.
@@ -72,13 +73,16 @@ public class Fan extends Actor {
             currentFrame++;
             if(currentFrame >= FRAMES_NUM) currentFrame = 0;
             time = 0f;
-            if(player.getY() > getY() && player.getY() < getY() + 190f) {
-                float force;
-                if (flipped)
-                    force = -WIND_FORCE * player.getX() / Game.WIDTH;
-                else
-                    force = WIND_FORCE * (1f - player.getX() / Game.WIDTH);
-                
+            if(player.getY() > getY() - 60f && player.getY() < getY() + 190f) {
+                float force, k;
+                if (flipped) {
+                    k = player.getX() / Game.WIDTH;
+                    force = -WIND_FORCE * k;
+                } else {
+                    k = (1f - player.getX() / Game.WIDTH);
+                    force = WIND_FORCE * k;
+                }
+                SoundManager.playSingle("blow", k);
                 player.getBody().applyLinearImpulse(force, 0, player.getBody().getPosition().x, player.getBody().getPosition().y, true);
             }
         }

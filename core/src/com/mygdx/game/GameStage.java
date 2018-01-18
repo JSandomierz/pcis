@@ -93,11 +93,13 @@ public class GameStage extends Stage {
         trampolineActor = new TrampolineActor(world, new Vector2(300,300), new Vector2(400,400), "elo", BodyDef.BodyType.KinematicBody, "trampoline");
         addActor(trampolineActor);
 
+
         for(int i=0;i<2;i++){//powerups
             PhysicsActor someBonus = new PhysicsActor(world, new Vector2(Game.WIDTH/2, (float)(Math.random()*Game.HEIGHT*3.0+Game.HEIGHT*1.5)), "boostup", BodyDef.BodyType.KinematicBody, "boostup", false, true);
             someBonus.setBeginContactAction(new ActorAction<PhysicsActor, Polandball>() {
                 @Override
                 public void commenceOperation(PhysicsActor me, Polandball him) {
+                    SoundManager.playSingle("powerup");
                     switch(me.label){
                         case "boostup":
                             him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*-0.5),0.9f), him.getBody().getPosition(), true);
@@ -144,6 +146,8 @@ public class GameStage extends Stage {
 
         logo.show();
         tapToStart.show();
+
+        SoundManager.playBackgroundMusic();
     }
 
     public void resetPhysicalActors(){
@@ -184,6 +188,7 @@ public class GameStage extends Stage {
     public void act(float delta){
         super.act(delta);
         if(!player.isLive() && currentMode == Mode.PLAY) {
+            SoundManager.playSingle("gameover");
             currentMode = Mode.TRY_AGAIN;
             gameover.show(saveHighscore());
         }
@@ -246,29 +251,32 @@ public class GameStage extends Stage {
     @Override
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
         boolean actionsFinished = logo.getActions().size == 0 && tapToStart.getActions().size == 0 && gameover.getActions().size == 0;
-        if((currentMode == Mode.START || currentMode == Mode.TRY_AGAIN) && actionsFinished) {
-            if(currentMode == Mode.TRY_AGAIN) {
-                gameover.hide();
-                restart();
+        if(actionsFinished) {
+            if ((currentMode == Mode.START || currentMode == Mode.TRY_AGAIN)) {
+                if (currentMode == Mode.TRY_AGAIN) {
+                    gameover.hide();
+                    restart();
+                }
+                currentMode = Mode.PLAY;
+                logo.hide();
+                tapToStart.hide();
+                SoundManager.playSingle("shot");
+                player.start();
+            } else {
+                Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
+                Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
+                if (Input.Buttons.LEFT == button && stageCoords.dst(player.getX(), player.getY()) > player.body.getFixtureList().get(0).getShape().getRadius()) {
+                    touchingScreen = true;
+                    //SoundManager.playSingle("click");
+                    touchBegin = stageCoords;
+                    touchEnd = new Vector2(stageCoords);
+                }
+                Gdx.app.debug("TOUCH", "down, pos: " + stageCoords.toString());
             }
-            currentMode = Mode.PLAY;
-            logo.hide();
-            tapToStart.hide();
-            player.start();
-        } else {
-            Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
-            Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
-            if( Input.Buttons.LEFT ==  button && stageCoords.dst(player.getX(), player.getY()) > player.body.getFixtureList().get(0).getShape().getRadius()){
-                touchingScreen = true;
-                touchBegin = stageCoords;
-                touchEnd = new Vector2(stageCoords);
-            }
-            Gdx.app.debug("TOUCH", "down, pos: "+stageCoords.toString());
-        }
 //        Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
 //        Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
 //        Gdx.app.debug("TOUCH", "down, pos: "+stageCoords.toString());
-
+        }
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -278,6 +286,7 @@ public class GameStage extends Stage {
             Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
             Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
             Gdx.app.debug("TOUCH", "  up, pos: "+stageCoords.toString()+" player vel: "+player.body.getLinearVelocity().y);
+            if(touchingScreen) SoundManager.playSingle("click");
             touchingScreen = false;
             if(Input.Buttons.RIGHT == button){
                 player.body.setTransform(stageCoords.x/100.f, stageCoords.y/100.f, player.body.getAngle());

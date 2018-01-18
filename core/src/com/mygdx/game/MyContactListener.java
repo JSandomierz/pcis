@@ -64,8 +64,12 @@ public class MyContactListener implements ContactListener {
                 ((PhysicsActor) bodya.getUserData()).reactToBeginContact((PhysicsActor)(bodya.getUserData()), (Polandball)(bodyb.getUserData()) );
             }
 
-            if(player != null && bottom.label.equals("bottom")) {
-                player.kill();
+            if(player != null) {
+                if(bottom.label.equals("bottom")) {
+                    player.kill();
+                } else {
+                    SoundManager.playSingle("bounce");
+                }
             }
 
         }
@@ -103,6 +107,14 @@ public class MyContactListener implements ContactListener {
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
+        Body bodyb = contact.getFixtureB().getBody();
+        Body bodya = contact.getFixtureA().getBody();
+        if((bodya.getUserData() instanceof Polandball && bodyb.getUserData() instanceof TrampolineActor)
+                ||
+                ( bodyb.getUserData() instanceof Polandball && bodya.getUserData() instanceof TrampolineActor)) {
+            //Game.content.getSound("jump").play(1f);
+            SoundManager.playSingle("jump");
+        }
         //Gdx.app.debug("Phys", "pre solve");
         //Body body = contact.getFixtureB().getBody();
         //body.destroyFixture(body.getFixtureList().first());
