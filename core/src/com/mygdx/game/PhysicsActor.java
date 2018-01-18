@@ -31,12 +31,12 @@ public class PhysicsActor extends Actor {
     public String label;
     private ActorAction<PhysicsActor, Polandball> beginContactAction, endContactAction;
 
-    public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label, boolean isRound, boolean isSensor){
+    public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label, boolean isRound, float radius, boolean isSensor){
         prepareBody(world, position, textureName, bodyType, label);
         Shape shape;
         if(isRound){
             shape = new CircleShape();
-            shape.setRadius(60f/PIXELS_TO_METERS);
+            shape.setRadius(radius/PIXELS_TO_METERS);
         }else{
             shape = new PolygonShape();
             ((PolygonShape)shape).setAsBox(sprite.getWidth()/2 / PIXELS_TO_METERS, sprite.getHeight()

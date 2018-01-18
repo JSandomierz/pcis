@@ -106,7 +106,7 @@ public class TrampolineActor extends Actor {
             world.destroyBody(body);
             body = null;
         }
-        setPosition(-100, -100);
+        setPosition(-200, -200);
     }
 
     @Override
