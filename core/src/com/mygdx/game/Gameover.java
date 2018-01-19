@@ -24,6 +24,7 @@ public class Gameover extends FadeInOutSprite {
     }
 
     public void updateTextures(){
+        super.updateTexture(Game.content.getTexture("taptotryagain"));
         font = Game.content.getFont();
     }
 
