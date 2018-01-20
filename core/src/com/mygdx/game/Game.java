@@ -62,6 +62,9 @@ public class Game extends ApplicationAdapter{
 		content.loadTexture("palace", "palace.png");
 		content.loadTexture("clouds", "clouds.png");
 		content.loadTexture("fan", "fan.png");
+		content.loadTexture("cannonback", "cannonback.png");
+		content.loadTexture("cannontop", "cannontop.png");
+		content.loadTexture("cannonbase", "cannonbase.png");
 		content.loadTexture("polandball", "polandball.png");
 		content.loadTexture("britishball", "britishball.png");
 		content.loadTexture("boostup", "boostup.png");
@@ -77,6 +80,10 @@ public class Game extends ApplicationAdapter{
 		content.loadSound("click", 65, "click.wav");
 		content.loadSound("blow", 250, "blow.wav");
 		content.loadSound("shot", "shot.wav");
+
+		content.loadSound("reload", "cannonreload.wav");
+
+
 		content.loadFont("font.fnt");
 		//content.loadMusic("music.mp3");
 		content.waitForLoad();

@@ -81,7 +81,7 @@ public class Fan extends Actor {
             currentFrame++;
             if(currentFrame >= FRAMES_NUM) currentFrame = 0;
             time = 0f;
-            if(player.getY() > getY() - 60f && player.getY() < getY() + 190f) {
+            if(player.isLive() && player.getY() > getY() - player.getHeight() && player.getY() < getY() + 190f) {
                 float force, k;
                 if (flipped) {
                     k = player.getX() / Game.WIDTH;

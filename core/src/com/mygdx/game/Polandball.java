@@ -36,10 +36,13 @@ public class Polandball extends PhysicsActor {
         setX(startPos.x);
         setY(startPos.y);
         setPosition(startPos.x, startPos.y);
+        setActive(false);
+        moveBy(500, 0);
         live = true;
     }
 
     public void start() {
+        setActive(true);
         body.setAwake(true);
         body.setActive(true);
         body.applyLinearImpulse(new Vector2(0, 1f), body.getPosition(), true);
@@ -61,9 +64,10 @@ public class Polandball extends PhysicsActor {
 
     @Override
     public void act (float delta) {
-        if(getY() > maxHeight) {
+        if(live && getY() > maxHeight) {
             maxHeight = (int) getY();
         }
+        super.act(delta);
     }
 
     public int getScore() {
