@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
@@ -30,6 +29,7 @@ public class GameStage extends Stage {
     Texture img;
    // List<PhysicsActor> obstacleList = new ArrayList<>();
     private Polandball player;
+    private Cannon cannon;
     private TrampolineActor trampolineActor;
 
     Vector2 touchBegin, touchEnd;
@@ -84,8 +84,17 @@ public class GameStage extends Stage {
         leftBorder = new ObstacleActor(world, new Vector2(0,0), new Vector2(10, h), "left", false, 0.7f);
         rightBorder = new ObstacleActor(world, new Vector2(w-10,0), new Vector2(10, h), "right", false, 0.7f);
 
+
+        cannon = new Cannon();
         player = new Polandball(world, new Vector2(Game.WIDTH/2f-60f, 40f));
+        player.setActive(false);
+        cannon.runBeforeAddingPlayer(this);
         addActor(player);
+        cannon.runAfterAddingPlayer(this);
+        addActor(cannon);
+        player.moveBy(500, 0);
+
+
         camera.setPlayer(player);
         scoreText = new ScoreText(player);
         this.hud.addActor(scoreText);
@@ -100,6 +109,8 @@ public class GameStage extends Stage {
                 @Override
                 public void commenceOperation(PhysicsActor me, Polandball him) {
                     SoundManager.playSingle("powerup");
+                    Gdx.input.vibrate(40);
+
                     switch(me.label){
                         case "boostup":
                             him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*-0.5),0.9f), him.getBody().getPosition(), true);
@@ -164,6 +175,8 @@ public class GameStage extends Stage {
     public void restart() {
         camera.restart();
         player.restart();
+
+        cannon.restart();
         for(Fan fan : fanList) {
             fan.remove(world);
             fan.addAction(Actions.removeActor());
@@ -189,6 +202,7 @@ public class GameStage extends Stage {
         super.act(delta);
         if(!player.isLive() && currentMode == Mode.PLAY) {
             SoundManager.playSingle("gameover");
+            Gdx.input.vibrate(new long[] {0, 100, 50, 100}, -1);
             currentMode = Mode.TRY_AGAIN;
             gameover.show(saveHighscore());
         }
@@ -247,6 +261,25 @@ public class GameStage extends Stage {
         }
     }
 
+    private void startGame() {
+        player.addAction(Actions.rotateBy(360, 0.8f));
+        player.addAction(Actions.sequence(Actions.moveBy(-480f, 0, 0.8f), Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                SoundManager.playSingle("reload");
+
+                cannon.addAction(Actions.sequence(Actions.rotateTo(0, 1), Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        SoundManager.playSingle("shot");
+                        Gdx.input.vibrate(60);
+                        player.start();
+                    }
+                })));
+            }
+        })));
+    }
+
     @Override
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
         boolean actionsFinished = logo.getActions().size == 0 && tapToStart.getActions().size == 0 && gameover.getActions().size == 0;
@@ -259,8 +292,8 @@ public class GameStage extends Stage {
                 currentMode = Mode.PLAY;
                 logo.hide();
                 tapToStart.hide();
-                SoundManager.playSingle("shot");
-                player.start();
+                startGame();
+
             } else {
                 Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
                 Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
@@ -302,16 +335,16 @@ public class GameStage extends Stage {
         if(keyCode == Input.Keys.PAGE_DOWN){
         }
         if(keyCode == Input.Keys.LEFT){
-            player.body.applyLinearImpulse(new Vector2(-1f, 0f), player.body.getPosition(), true);
+            player.body.applyLinearImpulse(new Vector2(-0.1f, 0f), player.body.getPosition(), true);
         }
         if(keyCode == Input.Keys.RIGHT){
-            player.body.applyLinearImpulse(new Vector2(1f, 0f), player.body.getPosition(), true);
+            player.body.applyLinearImpulse(new Vector2(0.1f, 0f), player.body.getPosition(), true);
         }
         if(keyCode == Input.Keys.UP){
-            player.body.applyLinearImpulse(new Vector2(0f, 1f), player.body.getPosition(), true);
+            player.body.applyLinearImpulse(new Vector2(0f, 0.1f), player.body.getPosition(), true);
         }
         if(keyCode == Input.Keys.DOWN){
-            player.body.applyLinearImpulse(new Vector2(0f, -1f), player.body.getPosition(), true);
+            player.body.applyLinearImpulse(new Vector2(0f, -0.1f), player.body.getPosition(), true);
         }
         return super.keyDown(keyCode);
     }

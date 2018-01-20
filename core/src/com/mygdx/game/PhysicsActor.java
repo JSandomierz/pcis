@@ -29,6 +29,7 @@ public class PhysicsActor extends Actor {
     Sprite sprite;
     Body body;
     public String label;
+    boolean active = true;
     private ActorAction<PhysicsActor, Polandball> beginContactAction, endContactAction;
 
     public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label, boolean isRound, float radius, boolean isSensor){
@@ -89,6 +90,9 @@ public class PhysicsActor extends Actor {
 
         body = world.createBody(bodyDef);
         body.setUserData(this);
+        setPosition((body.getPosition().x * Game.PPM) - sprite.getWidth() / 2,
+                (body.getPosition().y * Game.PPM) - sprite.getHeight() / 2);
+
     }
 
     public void createFixture(Shape shape, boolean isSensor){
@@ -122,10 +126,12 @@ public class PhysicsActor extends Actor {
 
     @Override
     public void draw(Batch batch, float alpha){
-        setPosition((body.getPosition().x * Game.PPM) - sprite.getWidth()/2 ,
-                            (body.getPosition().y * Game.PPM) - sprite.getHeight()/2 );
+        if(active) {
+            setPosition((body.getPosition().x * Game.PPM) - sprite.getWidth() / 2,
+                    (body.getPosition().y * Game.PPM) - sprite.getHeight() / 2);
 
-        setRotation((float)Math.toDegrees(body.getAngle()));
+            setRotation((float) Math.toDegrees(body.getAngle()));
+        }
         batch.draw(sprite, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(),1f,1f,getRotation());
     }
 
@@ -137,6 +143,10 @@ public class PhysicsActor extends Actor {
     @Override
     public void setX(float x) {
         body.setTransform((x+sprite.getWidth()/2f)/Game.PPM, body.getPosition().y, body.getAngle());
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
 }
