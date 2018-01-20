@@ -55,7 +55,7 @@ public class Cannon extends Actor {
     }
 
     public void updateTextures() {
-        backLayer.setTexture(Game.content.getTexture("palace"));
+        backLayer.setTexture(Game.content.getTexture("cannonback"));
         topLayer.setTexture(Game.content.getTexture("cannontop"));
         base.setTexture(Game.content.getTexture("cannonbase"));
     }
