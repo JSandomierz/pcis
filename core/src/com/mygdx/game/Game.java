@@ -66,7 +66,8 @@ public class Game extends ApplicationAdapter{
 		content.loadTexture("cannontop", "cannontop.png");
 		content.loadTexture("cannonbase", "cannonbase.png");
 		content.loadTexture("polandball", "polandball.png");
-		content.loadTexture("britishball", "britishball.png");
+		content.loadTexture("enemy_british", "britishball.png");
+		content.loadTexture("enemy_russia", "russiaball.png");
 		content.loadTexture("boostup", "boostup.png");
 		content.loadTexture("boostdown", "boostdown.png");
 		content.loadTexture("boosthorizontal", "boosthorizontal.png");
@@ -87,6 +88,7 @@ public class Game extends ApplicationAdapter{
 		content.loadFont("font.fnt");
 		//content.loadMusic("music.mp3");
 		content.waitForLoad();
+		Gdx.app.debug("CONTENT", "reload");
 		if(gameStage != null){
 			gameStage.reloadContent();
 		}

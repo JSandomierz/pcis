@@ -36,6 +36,8 @@ public class PhysicsActor extends Actor{
     public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label, boolean isRound, float radius, boolean isSensor){
         prepareBody(world, position, textureName, bodyType, label);
         Shape shape;
+        this.setWidth(sprite.getWidth());
+        this.setHeight(sprite.getHeight());
         if(isRound){
             shape = new CircleShape();
             shape.setRadius(radius/PIXELS_TO_METERS);
@@ -53,7 +55,9 @@ public class PhysicsActor extends Actor{
     }
 
     public void setSpriteTexture(String textureName){
-        sprite.setTexture( Game.content.getTexture(textureName) );
+        //Gdx.app.debug("Texture",textureName+"; "+Game.content.getTexture(textureName).toString());
+        this.textureName = textureName;
+        //sprite.setTexture( Game.content.getTexture(textureName) );
     }
 
     public void reactToBeginContact(PhysicsActor me, Polandball him){

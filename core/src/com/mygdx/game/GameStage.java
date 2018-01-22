@@ -53,6 +53,7 @@ public class GameStage extends Stage {
     private Vector<PhysicsActor> stuffVector = new Vector<>();
     private Vector<PhysicsActor> thingsToMoveUp = new Vector<>();
     private String[] powerupTypes = {"boostup", "boostdown", "boosthorizontal"};
+    private String[] enemyTypes = {"british", "russia"};
 
     private enum Mode {
         START,
@@ -136,7 +137,7 @@ public class GameStage extends Stage {
         }
 
         for(int i=0;i<2;i++){//enemies
-            PhysicsActor someBonus = new PhysicsActor(world, new Vector2((float)(Math.random()*Game.WIDTH/4.0+Game.WIDTH/2.0), (float)(Math.random()*Game.HEIGHT*4.0+Game.HEIGHT*1.5)), "britishball", BodyDef.BodyType.KinematicBody, "enemy", true, 40f, true);
+            PhysicsActor someBonus = new PhysicsActor(world, new Vector2((float)(Math.random()*Game.WIDTH/4.0+Game.WIDTH/2.0), (float)(Math.random()*Game.HEIGHT*4.0+Game.HEIGHT*1.5)), "enemy_british", BodyDef.BodyType.KinematicBody, "enemy_british", true, 50f, true);
             someBonus.setBeginContactAction(new ActorAction<PhysicsActor, Polandball>() {
                 @Override
                 public void commenceOperation(PhysicsActor me, Polandball him) {
@@ -176,7 +177,7 @@ public class GameStage extends Stage {
     public void restart() {
         camera.restart();
         player.restart();
-
+        touchingScreen = false;
         cannon.restart();
         for(Fan fan : fanList) {
             fan.remove(world);
@@ -233,8 +234,21 @@ public class GameStage extends Stage {
                 element.label = nextPowerUp;
                 element.setSpriteTexture( nextPowerUp );
             }
-            if(element.label.equals("enemy")){
-                element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, element.body.getPosition().y+(float)(Math.random()*3.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+            if(element.label.matches("enemy.*")){
+                String nextEnemy = "enemy_"+enemyTypes[(int)(Math.random()*10.0)%enemyTypes.length];
+                element.label = nextEnemy;
+                Gdx.app.debug("ENEMY",nextEnemy);
+                element.setSpriteTexture(nextEnemy);
+                if(element.label.equals("enemy_russia")){
+                    if(Math.random()>0.4999){
+                        element.body.setTransform( (element.getWidth()/2f)/100f, element.body.getPosition().y+(float)(Math.random()*3.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+                    }else{
+                        element.body.setTransform( (Game.WIDTH - element.getWidth()/2f)/100f, element.body.getPosition().y+(float)(Math.random()*3.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+                    }
+                }
+                if(element.label.equals("enemy_british")){
+                    element.body.setTransform( (float)(Math.random()*(double)((Game.WIDTH - element.getWidth())/2.0) + (Game.WIDTH - element.getWidth())/2.0)/100f, element.body.getPosition().y+(float)(Math.random()*3.0*Game.HEIGHT+Game.HEIGHT)/100f, 0f );
+                }
             }
         }
         thingsToMoveUp.clear();
@@ -304,12 +318,7 @@ public class GameStage extends Stage {
                     touchBegin = stageCoords;
                     touchEnd = new Vector2(stageCoords);
                 }
-                Gdx.app.debug("TOUCH", "down, pos: " + stageCoords.toString());
-
             }
-//        Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
-//        Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
-//        Gdx.app.debug("TOUCH", "down, pos: "+stageCoords.toString());
         }
         return super.touchDown(screenX, screenY, pointer, button);
     }
@@ -319,15 +328,14 @@ public class GameStage extends Stage {
         if(currentMode == Mode.PLAY) {
             Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
             Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
-            Gdx.app.debug("TOUCH", "  up, pos: "+stageCoords.toString()+" player vel: "+player.body.getLinearVelocity().y);
             if(touchingScreen) SoundManager.playSingle("click");
-            touchingScreen = false;
             if(Input.Buttons.RIGHT == button){
                 player.body.setTransform(stageCoords.x/100.f, stageCoords.y/100.f, player.body.getAngle());
                 player.body.setActive(true);
                 player.body.setAwake(true);
             }
         }
+        touchingScreen = false;
         return super.touchUp(screenX, screenY, pointer, button);
     }
 

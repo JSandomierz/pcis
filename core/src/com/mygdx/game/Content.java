@@ -89,7 +89,7 @@ public class Content {
 
     public void waitForLoad() {
         while(!assetManager.update()) {
-            Gdx.app.log("LOADING ASSETS", String.valueOf(assetManager.getProgress()));
+            //Gdx.app.log("LOADING ASSETS", String.valueOf(assetManager.getProgress()));
         };
     }
 
