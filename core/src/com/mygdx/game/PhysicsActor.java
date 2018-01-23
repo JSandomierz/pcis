@@ -137,8 +137,8 @@ public class PhysicsActor extends Actor{
                     (body.getPosition().y * Game.PPM) - sprite.getHeight() / 2);
 
         setRotation((float)Math.toDegrees(body.getAngle()));
-        sprite.setTexture(Game.content.getTexture(textureName));
         }
+        sprite.setTexture(Game.content.getTexture(textureName));
         batch.draw(sprite, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(),1f,1f,getRotation());
     }
 
