@@ -82,7 +82,7 @@ public class GameStage extends Stage {
 
         float w = Game.WIDTH;
         float h = Game.HEIGHT;
-        bottomSensor = new ObstacleActor(world, new Vector2(0,20), new Vector2(w, 10), "bottom", true, 1.2f);
+        bottomSensor = new ObstacleActor(world, new Vector2(0,25), new Vector2(w, 10), "bottom", true, 1.2f);
         leftBorder = new ObstacleActor(world, new Vector2(0,0), new Vector2(10, h), "left", false, 0.7f);
         rightBorder = new ObstacleActor(world, new Vector2(w-10,0), new Vector2(10, h), "right", false, 0.7f);
 
@@ -112,16 +112,16 @@ public class GameStage extends Stage {
                 public void commenceOperation(PhysicsActor me, Polandball him) {
                     SoundManager.playSingle("powerup");
                     Gdx.input.vibrate(40);
-
                     switch(me.label){
                         case "boostup":
-                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*-0.5),0.9f), him.getBody().getPosition(), true);
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()-0.5), (float)(Math.random()+0.5)), him.getBody().getPosition(), true);
                             break;
                         case "boostdown":
-                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()-0.5),-0.5f), him.getBody().getPosition(), true);
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()-0.5),(float)(-1.0*(Math.random()/2+0.5)), him.getBody().getPosition(), true);
                             break;
                         case "boosthorizontal":
-                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*3.0-1.5),0.3f), him.getBody().getPosition(), true);
+                            if(Math.random()>0.49)  him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*2.0+1.0),0.3f), him.getBody().getPosition(), true);
+                            else                    him.getBody().applyLinearImpulse(new Vector2((float)(-1.0*(Math.random()*2.0+1.0)),0.3f), him.getBody().getPosition(), true);
                             break;
                     }
                 }
