@@ -6,9 +6,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
 
-/**
- * Created by szostak on 1/12/18.
- */
+
 
 public class Polandball extends PhysicsActor {
     private Vector2 startPos;

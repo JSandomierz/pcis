@@ -7,9 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
-/**
- * Created by szostakm on 18.01.18.
- */
+
 
 public class Cannon extends Actor {
     private Sprite backLayer = new Sprite(Game.content.getTexture("cannonback"));

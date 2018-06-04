@@ -14,9 +14,7 @@ import com.mygdx.game.Game;
 import com.mygdx.game.Polandball;
 import com.mygdx.game.SoundManager;
 
-/**
- * Created by szostak on 1/13/18.
- */
+
 
 public class Fan extends Actor {
     private final static int FRAMES_NUM = 3;

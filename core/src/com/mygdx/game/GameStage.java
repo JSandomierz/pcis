@@ -22,9 +22,7 @@ import java.util.Vector;
 import static com.badlogic.gdx.Gdx.input;
 
 
-/**
- * Created by Jakub on 2018-01-09.
- */
+
 
 public class GameStage extends Stage {
     Texture img;
@@ -114,10 +112,10 @@ public class GameStage extends Stage {
                     Gdx.input.vibrate(40);
                     switch(me.label){
                         case "boostup":
-                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()-0.5), (float)(Math.random()+0.5)), him.getBody().getPosition(), true);
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()-0.5), (float)(Math.random()*0.66+0.5)), him.getBody().getPosition(), true);
                             break;
                         case "boostdown":
-                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()-0.5),(float)(-1.0*(Math.random()/2+0.5)), him.getBody().getPosition(), true);
+                            him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()-0.5),(float)(-1.0*(Math.random()/2+0.5))), him.getBody().getPosition(), true);
                             break;
                         case "boosthorizontal":
                             if(Math.random()>0.49)  him.getBody().applyLinearImpulse(new Vector2((float)(Math.random()*2.0+1.0),0.3f), him.getBody().getPosition(), true);

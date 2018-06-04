@@ -6,9 +6,7 @@ import com.badlogic.gdx.audio.Sound;
 
 import java.util.HashMap;
 
-/**
- * Created by szostakm on 17.01.18.
- */
+
 
 public class SoundManager {
 

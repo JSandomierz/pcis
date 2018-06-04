@@ -10,9 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.HashMap;
 
-/**
- * Created by szostakm on 10.01.18.
- */
+
 
 public class Content {
     private HashMap<String, String> fileNames = new HashMap<>();

@@ -9,9 +9,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.Body;
 
-/**
- * Created by Jakub on 2018-01-09.
- */
+
 
 public class MyContactListener implements ContactListener {
     @Override

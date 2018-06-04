@@ -3,9 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
-/**
- * Created by szostak on 1/12/18.
- */
+
 
 public class FollowingCamera extends OrthographicCamera {
     private Polandball player;

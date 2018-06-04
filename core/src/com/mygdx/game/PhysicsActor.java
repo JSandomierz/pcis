@@ -20,9 +20,7 @@ import java.util.List;
 
 import javax.swing.GroupLayout;
 
-/**
- * Created by Jakub on 2018-01-09.
- */
+
 
 public class PhysicsActor extends Actor{
     private static final float PIXELS_TO_METERS = 100f;

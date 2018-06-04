@@ -6,9 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
-/**
- * Created by szostakm on 15.01.18.
- */
+
 
 public class Gameover extends FadeInOutSprite {
     private BitmapFont font = Game.content.getFont();

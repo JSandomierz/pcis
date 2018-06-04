@@ -14,9 +14,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-/**
- * Created by Jakub on 2018-01-12.
- */
+
 
 public class TrampolineActor extends Actor {
     public float maxWidth = 200f;

@@ -5,9 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-/**
- * Created by szostakm on 15.01.18.
- */
+
 
 public class ScoreText extends Actor {
     private BitmapFont font = Game.content.getFont();

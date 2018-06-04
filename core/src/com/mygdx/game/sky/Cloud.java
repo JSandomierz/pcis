@@ -8,9 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.mygdx.game.Game;
 
-/**
- * Created by szostak on 1/13/18.
- */
+
 
 public class Cloud extends Actor {
     private final static int CLOUD_WIDTH = 337;
