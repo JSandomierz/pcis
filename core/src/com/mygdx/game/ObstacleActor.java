@@ -11,9 +11,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-/**
- * Created by Jakub on 2018-01-10.
- */
+
 
 public class ObstacleActor extends Actor {
     private static final float PIXELS_TO_METERS = 100f;

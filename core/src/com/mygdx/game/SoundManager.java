@@ -6,9 +6,7 @@ import com.badlogic.gdx.audio.Sound;
 
 import java.util.HashMap;
 
-/**
- * Created by szostakm on 17.01.18.
- */
+
 
 public class SoundManager {
 
@@ -27,8 +25,6 @@ public class SoundManager {
     public static void playSingle(String soundName) {
         playSingle(soundName, 1f);
     }
-
-
         public static void playBackgroundMusic() {
         Music music = Game.content.getMusic();
         music.setLooping(true);

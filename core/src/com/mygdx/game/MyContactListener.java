@@ -9,9 +9,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.Body;
 
-/**
- * Created by Jakub on 2018-01-09.
- */
+
 
 public class MyContactListener implements ContactListener {
     @Override
@@ -69,10 +67,13 @@ public class MyContactListener implements ContactListener {
                     player.kill();
                 } else {
                     SoundManager.playSingle("bounce");
+                    Gdx.input.vibrate(20);
                 }
             }
 
         }
+
+
     }
 
     @Override
@@ -102,28 +103,26 @@ public class MyContactListener implements ContactListener {
                 //Gdx.app.debug("Phys", "end contact body: "+physicsActor);
                 ((PhysicsActor) bodya.getUserData()).reactToEndContact((PhysicsActor)(bodya.getUserData()), (Polandball)(bodyb.getUserData()) );
             }
+
+            if((bodya.getUserData() instanceof Polandball && bodyb.getUserData() instanceof TrampolineActor)
+                    ||
+                    ( bodyb.getUserData() instanceof Polandball && bodya.getUserData() instanceof TrampolineActor)) {
+                SoundManager.playSingle("jump");
+                Gdx.input.vibrate(50);
+            }
         }
+
+
     }
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
-        Body bodyb = contact.getFixtureB().getBody();
-        Body bodya = contact.getFixtureA().getBody();
-        if((bodya.getUserData() instanceof Polandball && bodyb.getUserData() instanceof TrampolineActor)
-                ||
-                ( bodyb.getUserData() instanceof Polandball && bodya.getUserData() instanceof TrampolineActor)) {
-            //Game.content.getSound("jump").play(1f);
-            SoundManager.playSingle("jump");
-        }
-        //Gdx.app.debug("Phys", "pre solve");
-        //Body body = contact.getFixtureB().getBody();
-        //body.destroyFixture(body.getFixtureList().first());
+
     }
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
-        //body.applyForceToCenter(0f, -300f, true);
-        //Gdx.app.debug("Phys", "post solve");
+
     }
 
 }

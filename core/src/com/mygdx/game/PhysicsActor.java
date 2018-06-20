@@ -20,20 +20,22 @@ import java.util.List;
 
 import javax.swing.GroupLayout;
 
-/**
- * Created by Jakub on 2018-01-09.
- */
 
-public class PhysicsActor extends Actor {
+
+public class PhysicsActor extends Actor{
     private static final float PIXELS_TO_METERS = 100f;
     Sprite sprite;
+    private String textureName;
     Body body;
     public String label;
+    boolean active = true;
     private ActorAction<PhysicsActor, Polandball> beginContactAction, endContactAction;
 
     public PhysicsActor(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label, boolean isRound, float radius, boolean isSensor){
         prepareBody(world, position, textureName, bodyType, label);
         Shape shape;
+        this.setWidth(sprite.getWidth());
+        this.setHeight(sprite.getHeight());
         if(isRound){
             shape = new CircleShape();
             shape.setRadius(radius/PIXELS_TO_METERS);
@@ -51,7 +53,9 @@ public class PhysicsActor extends Actor {
     }
 
     public void setSpriteTexture(String textureName){
-        sprite.setTexture( Game.content.getTexture(textureName) );
+        //Gdx.app.debug("Texture",textureName+"; "+Game.content.getTexture(textureName).toString());
+        this.textureName = textureName;
+        //sprite.setTexture( Game.content.getTexture(textureName) );
     }
 
     public void reactToBeginContact(PhysicsActor me, Polandball him){
@@ -70,6 +74,7 @@ public class PhysicsActor extends Actor {
     }
 
     private void prepareBody(World world, Vector2 position, String textureName, BodyDef.BodyType bodyType, String label){
+        this.textureName = textureName;
         beginContactAction = new ActorAction<PhysicsActor, Polandball>() {
             @Override
             public void commenceOperation(PhysicsActor me, Polandball him) {
@@ -89,6 +94,9 @@ public class PhysicsActor extends Actor {
 
         body = world.createBody(bodyDef);
         body.setUserData(this);
+        setPosition((body.getPosition().x * Game.PPM) - sprite.getWidth() / 2,
+                (body.getPosition().y * Game.PPM) - sprite.getHeight() / 2);
+
     }
 
     public void createFixture(Shape shape, boolean isSensor){
@@ -122,10 +130,13 @@ public class PhysicsActor extends Actor {
 
     @Override
     public void draw(Batch batch, float alpha){
-        setPosition((body.getPosition().x * Game.PPM) - sprite.getWidth()/2 ,
-                            (body.getPosition().y * Game.PPM) - sprite.getHeight()/2 );
+        if(active) {
+            setPosition((body.getPosition().x * Game.PPM) - sprite.getWidth() / 2,
+                    (body.getPosition().y * Game.PPM) - sprite.getHeight() / 2);
 
         setRotation((float)Math.toDegrees(body.getAngle()));
+        }
+        sprite.setTexture(Game.content.getTexture(textureName));
         batch.draw(sprite, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(),1f,1f,getRotation());
     }
 
@@ -137,6 +148,10 @@ public class PhysicsActor extends Actor {
     @Override
     public void setX(float x) {
         body.setTransform((x+sprite.getWidth()/2f)/Game.PPM, body.getPosition().y, body.getAngle());
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
 }

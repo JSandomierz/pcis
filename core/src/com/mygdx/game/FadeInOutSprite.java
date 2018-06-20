@@ -6,9 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
-/**
- * Created by szostak on 1/12/18.
- */
+
 
 public class FadeInOutSprite extends Actor {
     protected Sprite sprite;
@@ -28,6 +26,10 @@ public class FadeInOutSprite extends Actor {
 
     public void hide() {
         addAction(Actions.fadeOut(fadeOutDuration));
+    }
+
+    public void updateTexture(Texture tex){
+        sprite.setTexture(tex);
     }
 
     @Override

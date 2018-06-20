@@ -14,9 +14,7 @@ import com.mygdx.game.Game;
 import com.mygdx.game.Polandball;
 import com.mygdx.game.SoundManager;
 
-/**
- * Created by szostak on 1/13/18.
- */
+
 
 public class Fan extends Actor {
     private final static int FRAMES_NUM = 3;
@@ -35,6 +33,14 @@ public class Fan extends Actor {
             flippedFrames[i].flip(true, false);
         }
         restartSpawner();
+    }
+    public static void reloadFans(){
+        texture = Game.content.getTexture("fan");
+        for(int i=0; i<FRAMES_NUM; ++i) {
+            frames[i] = new TextureRegion(texture, FRAME_WIDTH * i, 0, FRAME_WIDTH, texture.getHeight());
+            flippedFrames[i] = new TextureRegion(texture, FRAME_WIDTH * i, 0, FRAME_WIDTH, texture.getHeight());
+            flippedFrames[i].flip(true, false);
+        }
     }
     private int currentFrame = 0;
     private float time = 0f;
@@ -73,7 +79,7 @@ public class Fan extends Actor {
             currentFrame++;
             if(currentFrame >= FRAMES_NUM) currentFrame = 0;
             time = 0f;
-            if(player.getY() > getY() - 60f && player.getY() < getY() + 190f) {
+            if(player.isLive() && player.getY() > getY() - player.getHeight() && player.getY() < getY() + 190f) {
                 float force, k;
                 if (flipped) {
                     k = player.getX() / Game.WIDTH;

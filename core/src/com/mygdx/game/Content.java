@@ -6,19 +6,20 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.HashMap;
 
-/**
- * Created by szostakm on 10.01.18.
- */
+
 
 public class Content {
     private HashMap<String, String> fileNames = new HashMap<>();
     private HashMap<String, SoundExt> sounds = new HashMap<>();
+    private HashMap<String, TextureRegion> textureRegions = new HashMap<>();
     private String fontFileName;
     private String musicFileName;
     private AssetManager assetManager = new AssetManager();
+    private Texture texture;
 
     public class SoundExt {
         public String path;
@@ -32,6 +33,11 @@ public class Content {
         public Sound getSound() {
             return assetManager.get(path);
         }
+    }
+
+    public void renewAssetManager(){
+        assetManager = new AssetManager();
+        Texture.setAssetManager(assetManager);
     }
 
     public Content() {
@@ -72,8 +78,7 @@ public class Content {
     }
 
     public Music getMusic() {
-        if(musicFileName==null) return null;
-        return assetManager.get(musicFileName);
+        return Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
     }
 
     public Texture getTexture(String name) {
@@ -82,7 +87,7 @@ public class Content {
 
     public void waitForLoad() {
         while(!assetManager.update()) {
-            Gdx.app.log("LOADING ASSETS", String.valueOf(assetManager.getProgress()));
+            //Gdx.app.log("LOADING ASSETS", String.valueOf(assetManager.getProgress()));
         };
     }
 

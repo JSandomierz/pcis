@@ -8,17 +8,20 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.mygdx.game.Game;
 
-/**
- * Created by szostak on 1/13/18.
- */
+
 
 public class Cloud extends Actor {
     private final static int CLOUD_WIDTH = 337;
     private final static int CLOUDS_NUM = 5;
     private final static float MOVEMENT_DURATION = 20f;
-    private final static Texture cloudsTexture = Game.content.getTexture("clouds");
+    private static Texture cloudsTexture = Game.content.getTexture("clouds");
     private final static TextureRegion[] cloudsRegions = new TextureRegion[CLOUDS_NUM];
     static {
+        for(int i=0; i<CLOUDS_NUM; ++i)
+            cloudsRegions[i] = new TextureRegion(cloudsTexture, i*CLOUD_WIDTH, 0, CLOUD_WIDTH, cloudsTexture.getHeight());
+    }
+    public static void reloadClouds(){
+        cloudsTexture = Game.content.getTexture("clouds");
         for(int i=0; i<CLOUDS_NUM; ++i)
             cloudsRegions[i] = new TextureRegion(cloudsTexture, i*CLOUD_WIDTH, 0, CLOUD_WIDTH, cloudsTexture.getHeight());
     }

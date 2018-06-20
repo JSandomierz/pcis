@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class Game extends ApplicationAdapter{
 	GameStage gameStage;
 	Stage hud;
-	public static final Content content = new Content();
+	public static Content content = new Content();
 	public final static int WIDTH = 1080;
 	public final static int HEIGHT = 1920;
 	public final static float PPM = 100f;
@@ -34,35 +34,7 @@ public class Game extends ApplicationAdapter{
 	@Override
 	public void create () {
 		prefs = Gdx.app.getPreferences("Poland can into Space");
-		content.loadTexture("skybg", "skybg.png");
-		content.loadTexture("logo", "logo.png");
-		content.loadTexture("taptostart", "taptostart.png");
-		content.loadTexture("taptotryagain", "taptotryagain.png");
-		content.loadTexture("palace", "palace.png");
-		content.loadTexture("clouds", "clouds.png");
-		content.loadTexture("fan", "fan.png");
-		content.loadTexture("polandball", "polandball.png");
-		content.loadTexture("britishball", "britishball.png");
-		content.loadTexture("boostup", "boostup.png");
-		content.loadTexture("boostdown", "boostdown.png");
-		content.loadTexture("boosthorizontal", "boosthorizontal.png");
-		content.loadTexture("badlogic", "badlogic.jpg");
-		content.loadSound("jump", 240, "boink.wav");
-		content.loadSound("bounce", 185, "bounce.wav");
-		content.loadSound("gameover",  "gameover.wav");
-		content.loadSound("powerup",  "powerup.wav");
-		content.loadSound("click", 65, "click.wav");
-		content.loadSound("blow", 250, "blow.wav");
-
-
-		content.loadSound("shot", "shot.wav");
-
-
-		content.loadFont("font.fnt");
-		content.loadMusic("music.mp3");
-
-		content.waitForLoad();
-
+		reloadContent();
 		Gdx.app.setLogLevel(Gdx.app.LOG_DEBUG);
 		batch = new SpriteBatch();
 		camera = new FollowingCamera();
@@ -76,6 +48,50 @@ public class Game extends ApplicationAdapter{
 		hud = new Stage(new StretchViewport(WIDTH, HEIGHT, hudCamera), batch);
 		gameStage = new GameStage(viewport, batch, camera, b2dCam, hud);
 		Gdx.input.setInputProcessor(gameStage);
+	}
+
+	private void reloadContent(){
+		if(content != null){
+			content.dispose();
+		}
+		content.renewAssetManager();
+		content.loadTexture("skybg", "skybg.png");
+		content.loadTexture("logo", "logo.png");
+		content.loadTexture("taptostart", "taptostart.png");
+		content.loadTexture("taptotryagain", "taptotryagain.png");
+		content.loadTexture("palace", "palace.png");
+		content.loadTexture("clouds", "clouds.png");
+		content.loadTexture("fan", "fan.png");
+		content.loadTexture("cannonback", "cannonback.png");
+		content.loadTexture("cannontop", "cannontop.png");
+		content.loadTexture("cannonbase", "cannonbase.png");
+		content.loadTexture("polandball", "polandball.png");
+		content.loadTexture("enemy_british", "britishball.png");
+		content.loadTexture("enemy_russia", "russiaball.png");
+		content.loadTexture("boostup", "boostup.png");
+		content.loadTexture("boostdown", "boostdown.png");
+		content.loadTexture("boosthorizontal", "boosthorizontal.png");
+		content.loadTexture("paddle_beg2", "paddle_beg2.png");
+		content.loadTexture("paddle_mid", "paddle_mid.png");
+		content.loadTexture("badlogic", "badlogic.jpg");
+		content.loadSound("jump", 240, "boink.wav");
+		content.loadSound("bounce", 185, "bounce.wav");
+		content.loadSound("gameover",  "gameover.wav");
+		content.loadSound("powerup",  "powerup.wav");
+		content.loadSound("click", 65, "click.wav");
+		content.loadSound("blow", 250, "blow.wav");
+		content.loadSound("shot", "shot.wav");
+
+		content.loadSound("reload", "cannonreload.wav");
+
+
+		content.loadFont("font.fnt");
+		//content.loadMusic("music.mp3");
+		content.waitForLoad();
+		Gdx.app.debug("CONTENT", "reload");
+		if(gameStage != null){
+			gameStage.reloadContent();
+		}
 	}
 
 	@Override
@@ -110,7 +126,7 @@ public class Game extends ApplicationAdapter{
 
 	@Override
 	public void resume () {
-		content.waitForLoad();
+		reloadContent();
 	}
 
 }

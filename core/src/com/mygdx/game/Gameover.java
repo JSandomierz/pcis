@@ -6,9 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
-/**
- * Created by szostakm on 15.01.18.
- */
+
 
 public class Gameover extends FadeInOutSprite {
     private BitmapFont font = Game.content.getFont();
@@ -21,6 +19,11 @@ public class Gameover extends FadeInOutSprite {
         super(Game.content.getTexture("taptotryagain"), fadeInDuration, fadeOutDuration, y);
         layout.setText(font, "NEW RECORD!");
         newRecordWidth = layout.width;
+    }
+
+    public void updateTextures(){
+        super.updateTexture(Game.content.getTexture("taptotryagain"));
+        font = Game.content.getFont();
     }
 
     public void show(boolean newRecord) {

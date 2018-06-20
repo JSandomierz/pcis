@@ -15,9 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.mygdx.game.FollowingCamera;
 import com.mygdx.game.Game;
 
-/**
- * Created by szostakm on 10.01.18.
- */
+
 
 public class SkyActor extends Group {
     final static int ONE_PART_HIGH = 10000;
@@ -46,6 +44,9 @@ public class SkyActor extends Group {
         }
     }
 
+    public void updateTexture(){
+        bgSprite.setTexture(Game.content.getTexture("palace"));
+    }
 
     @Override
     public void draw(Batch batch, float alpha) {
