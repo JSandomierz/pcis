@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package pl.sanszo.pcis;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -13,9 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.game.sky.Cloud;
-import com.mygdx.game.sky.Fan;
-import com.mygdx.game.sky.SkyActor;
+import pl.sanszo.pcis.sky.Cloud;
+import pl.sanszo.pcis.sky.Fan;
+import pl.sanszo.pcis.sky.SkyActor;
 
 import java.util.Vector;
 

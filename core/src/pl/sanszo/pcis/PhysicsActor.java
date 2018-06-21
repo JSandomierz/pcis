@@ -1,7 +1,6 @@
-package com.mygdx.game;
+package pl.sanszo.pcis;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -14,12 +13,6 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
-import com.sun.management.VMOption;
-
-import java.util.List;
-
-import javax.swing.GroupLayout;
-
 
 
 public class PhysicsActor extends Actor{

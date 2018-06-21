@@ -1,9 +1,9 @@
-package com.mygdx.game.desktop;
+package pl.mygdx.game.desktop;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.mygdx.game.Game;
+import pl.sanszo.pcis.Game;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -13,7 +13,7 @@ public class DesktopLauncher {
 		config.addIcon("icon128.png", Files.FileType.Internal);
 		config.addIcon("icon32.png", Files.FileType.Internal);
 		config.addIcon("icon16.png", Files.FileType.Internal);
-
+		config.title = "Poland can into Space";
 		new LwjglApplication(new Game(), config);
 	}
 }

@@ -1,20 +1,12 @@
-package com.mygdx.game.sky;
+package pl.sanszo.pcis.sky;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.mygdx.game.FollowingCamera;
-import com.mygdx.game.Game;
-
+import pl.sanszo.pcis.FollowingCamera;
+import pl.sanszo.pcis.Game;
 
 
 public class SkyActor extends Group {

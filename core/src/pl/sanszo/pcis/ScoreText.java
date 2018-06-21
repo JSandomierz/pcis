@@ -1,8 +1,7 @@
-package com.mygdx.game;
+package pl.sanszo.pcis;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 

@@ -1,4 +1,4 @@
-package com.mygdx.game.sky;
+package pl.sanszo.pcis.sky;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -6,8 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.mygdx.game.Game;
-
+import pl.sanszo.pcis.Game;
 
 
 public class Cloud extends Actor {

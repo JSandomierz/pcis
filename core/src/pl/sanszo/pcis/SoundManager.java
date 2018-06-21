@@ -1,11 +1,6 @@
-package com.mygdx.game;
+package pl.sanszo.pcis;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
-
-import java.util.HashMap;
-
 
 
 public class SoundManager {
