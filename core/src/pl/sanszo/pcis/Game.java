@@ -48,10 +48,6 @@ public class Game extends ApplicationAdapter{
 	}
 
 	private void reloadContent(){
-		if(content != null){
-			content.dispose();
-		}
-		content.renewAssetManager();
 		content.loadTexture("skybg", "skybg.png");
 		content.loadTexture("logo", "logo.png");
 		content.loadTexture("taptostart", "taptostart.png");
@@ -84,6 +80,7 @@ public class Game extends ApplicationAdapter{
 
 		content.loadFont("font.fnt");
 		//content.loadMusic("music.mp3");
+
 		content.waitForLoad();
 		Gdx.app.debug("CONTENT", "reload");
 		if(gameStage != null){
@@ -123,7 +120,10 @@ public class Game extends ApplicationAdapter{
 
 	@Override
 	public void resume () {
-		reloadContent();
+		//reloadContent();
+		//Gdx.app.debug("CONTENT", "resume");
+		content.waitForLoad();
+		//Gdx.app.debug("CONTENT", "loaded");
 	}
 
 }

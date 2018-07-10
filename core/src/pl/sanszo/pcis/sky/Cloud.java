@@ -13,22 +13,18 @@ public class Cloud extends Actor {
     private final static int CLOUD_WIDTH = 337;
     private final static int CLOUDS_NUM = 5;
     private final static float MOVEMENT_DURATION = 20f;
-    private static Texture cloudsTexture = Game.content.getTexture("clouds");
-    private final static TextureRegion[] cloudsRegions = new TextureRegion[CLOUDS_NUM];
-    static {
+    private final TextureRegion[] cloudsRegions = new TextureRegion[CLOUDS_NUM];
+
+    public void reloadClouds(){
         for(int i=0; i<CLOUDS_NUM; ++i)
-            cloudsRegions[i] = new TextureRegion(cloudsTexture, i*CLOUD_WIDTH, 0, CLOUD_WIDTH, cloudsTexture.getHeight());
-    }
-    public static void reloadClouds(){
-        cloudsTexture = Game.content.getTexture("clouds");
-        for(int i=0; i<CLOUDS_NUM; ++i)
-            cloudsRegions[i] = new TextureRegion(cloudsTexture, i*CLOUD_WIDTH, 0, CLOUD_WIDTH, cloudsTexture.getHeight());
+            cloudsRegions[i] = new TextureRegion(Game.content.getTexture("clouds"), i*CLOUD_WIDTH, 0, CLOUD_WIDTH, Game.content.getTexture("clouds").getHeight());
     }
 
     private int cloudType;
     private boolean rightToLeft;
 
     public Cloud(float y) {
+        reloadClouds();
         cloudType = (int)(Math.random()*CLOUDS_NUM);
         rightToLeft = (Math.random() > 0.5);
         setY(y);

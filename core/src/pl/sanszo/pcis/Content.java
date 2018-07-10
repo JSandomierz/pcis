@@ -15,11 +15,9 @@ import java.util.HashMap;
 public class Content {
     private HashMap<String, String> fileNames = new HashMap<>();
     private HashMap<String, SoundExt> sounds = new HashMap<>();
-    private HashMap<String, TextureRegion> textureRegions = new HashMap<>();
     private String fontFileName;
     private String musicFileName;
-    private AssetManager assetManager = new AssetManager();
-    private Texture texture;
+    private AssetManager assetManager;
 
     public class SoundExt {
         public String path;
@@ -35,12 +33,8 @@ public class Content {
         }
     }
 
-    public void renewAssetManager(){
-        assetManager = new AssetManager();
-        Texture.setAssetManager(assetManager);
-    }
-
     public Content() {
+        assetManager = new AssetManager();
         Texture.setAssetManager(assetManager);
     }
 
@@ -86,7 +80,7 @@ public class Content {
     }
 
     public void waitForLoad() {
-        while(!assetManager.update()) {
+        while(!assetManager.update(10)) {
             //Gdx.app.log("LOADING ASSETS", String.valueOf(assetManager.getProgress()));
         };
     }

@@ -358,7 +358,7 @@ public class GameStage extends Stage {
 
     public void reloadContent(){
         Fan.reloadFans();
-        Cloud.reloadClouds();
+        //Cloud.reloadClouds();
         skyActor.updateTexture();
         logo.updateTexture(Game.content.getTexture("logo"));
         tapToStart.updateTexture(Game.content.getTexture("taptostart"));
