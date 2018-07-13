@@ -164,15 +164,19 @@ public class GameStage extends Stage {
     public void resetPhysicalActors(){
         for(PhysicsActor element: stuffVector){
             if(element.label.matches("boost.*")){
+                Gdx.app.debug("RESET", "BOOST");
                 element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, (float)(Math.random()*4.0*Game.HEIGHT+Game.HEIGHT*2.0)/100f, 0f );
             }
-            if(element.label.equals("enemy")){
+            if(element.label.matches("enemy.*")){
+                Gdx.app.debug("RESET", "ENEMY: "+element.label);
                 element.body.setTransform( (float)(Math.random()*(double)(Game.WIDTH - element.getWidth()))/100f, (float)(Math.random()*3.0*Game.HEIGHT+Game.HEIGHT*2.0)/100f, 0f );
             }
         }
+        thingsToMoveUp.clear();
     }
 
     public void restart() {
+        Gdx.app.debug("RESET", "Restart");
         camera.restart();
         player.restart();
         touchingScreen = false;
@@ -357,7 +361,7 @@ public class GameStage extends Stage {
     }
 
     public void reloadContent(){
-        Fan.reloadFans();
+        //Fan.reloadFans();
         //Cloud.reloadClouds();
         skyActor.updateTexture();
         logo.updateTexture(Game.content.getTexture("logo"));

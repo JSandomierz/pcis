@@ -1,4 +1,4 @@
-package pl.mygdx.game.desktop;
+package pl.sanszo.pcis.desktop;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;

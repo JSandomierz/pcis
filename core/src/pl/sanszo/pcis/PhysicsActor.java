@@ -48,7 +48,7 @@ public class PhysicsActor extends Actor{
     public void setSpriteTexture(String textureName){
         //Gdx.app.debug("Texture",textureName+"; "+Game.content.getTexture(textureName).toString());
         this.textureName = textureName;
-        //sprite.setTexture( Game.content.getTexture(textureName) );
+        sprite.setTexture( Game.content.getTexture(textureName) );
     }
 
     public void reactToBeginContact(PhysicsActor me, Polandball him){

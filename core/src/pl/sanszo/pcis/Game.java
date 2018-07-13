@@ -1,5 +1,6 @@
 package pl.sanszo.pcis;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -30,6 +31,8 @@ public class Game extends ApplicationAdapter{
 
 	@Override
 	public void create () {
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		Gdx.app.debug("APP", "Start");
 		prefs = Gdx.app.getPreferences("Poland can into Space");
 		reloadContent();
 		Gdx.app.setLogLevel(Gdx.app.LOG_DEBUG);
@@ -48,6 +51,7 @@ public class Game extends ApplicationAdapter{
 	}
 
 	private void reloadContent(){
+		content = new Content();
 		content.loadTexture("skybg", "skybg.png");
 		content.loadTexture("logo", "logo.png");
 		content.loadTexture("taptostart", "taptostart.png");
@@ -108,6 +112,7 @@ public class Game extends ApplicationAdapter{
 
 	@Override
 	public void dispose () {
+		Gdx.app.debug("CONTENT", "dispose");
 		batch.dispose();
 		content.dispose();
 	}
@@ -121,7 +126,7 @@ public class Game extends ApplicationAdapter{
 	@Override
 	public void resume () {
 		//reloadContent();
-		//Gdx.app.debug("CONTENT", "resume");
+		Gdx.app.debug("CONTENT", "resume");
 		content.waitForLoad();
 		//Gdx.app.debug("CONTENT", "loaded");
 	}
