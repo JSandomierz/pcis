@@ -5,7 +5,7 @@ import com.badlogic.gdx.audio.Music;
 
 public class SoundManager {
 
-    final private static float BACKGROUND_MUSIC_VOLUME = 0.1f;
+    final public static float BACKGROUND_MUSIC_VOLUME = 0.1f;
 
     public static void playSingle(String soundName, float volume) {
         Content.SoundExt soundExt = Game.content.getSound(soundName);
@@ -20,10 +20,12 @@ public class SoundManager {
     public static void playSingle(String soundName) {
         playSingle(soundName, 1f);
     }
-        public static void playBackgroundMusic() {
-        Music music = Game.content.getMusic();
-        music.setLooping(true);
-        music.setVolume(BACKGROUND_MUSIC_VOLUME);
-        music.play();
+
+    public static void playBackgroundMusic() {
+        Game.content.getMusic().play();
+    }
+
+    public static void pauseBackgroundMusic() {
+        Game.content.getMusic().pause();
     }
 }

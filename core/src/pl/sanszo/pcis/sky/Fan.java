@@ -19,33 +19,26 @@ public class Fan extends Actor {
     private final static float INTERVAL = 0.1f;
     private final static float WIND_FORCE = 0.3f;
     private static int FRAME_WIDTH;
-    private static Texture texture = Game.content.getTexture("fan");
-    private static TextureRegion[] frames = new TextureRegion[FRAMES_NUM];
-    private static TextureRegion[] flippedFrames = new TextureRegion[FRAMES_NUM];
+    private  Texture texture = Game.content.getTexture("fan");
+    private  TextureRegion[] frames = new TextureRegion[FRAMES_NUM];
+    private  TextureRegion[] flippedFrames = new TextureRegion[FRAMES_NUM];
 
     static {
-        FRAME_WIDTH = texture.getWidth()/FRAMES_NUM;
-        for(int i=0; i<FRAMES_NUM; ++i) {
-            frames[i] = new TextureRegion(texture, FRAME_WIDTH * i, 0, FRAME_WIDTH, texture.getHeight());
-            flippedFrames[i] = new TextureRegion(texture, FRAME_WIDTH * i, 0, FRAME_WIDTH, texture.getHeight());
-            flippedFrames[i].flip(true, false);
-        }
         restartSpawner();
     }
-    public static void reloadFans(){
-        texture = Game.content.getTexture("fan");
-        for(int i=0; i<FRAMES_NUM; ++i) {
-            frames[i] = new TextureRegion(texture, FRAME_WIDTH * i, 0, FRAME_WIDTH, texture.getHeight());
-            flippedFrames[i] = new TextureRegion(texture, FRAME_WIDTH * i, 0, FRAME_WIDTH, texture.getHeight());
-            flippedFrames[i].flip(true, false);
-        }
-    }
+
     private int currentFrame = 0;
     private float time = 0f;
     private boolean flipped;
     private Body body;
 
     public Fan(World world, float y, boolean right) {
+        FRAME_WIDTH = texture.getWidth()/FRAMES_NUM;
+        for(int i=0; i<FRAMES_NUM; ++i) {
+            frames[i] = new TextureRegion(texture, FRAME_WIDTH * i, 0, FRAME_WIDTH, texture.getHeight());
+            flippedFrames[i] = new TextureRegion(texture, FRAME_WIDTH * i, 0, FRAME_WIDTH, texture.getHeight());
+            flippedFrames[i].flip(true, false);
+        }
         flipped = !right;
         setY(y);
         if(right)

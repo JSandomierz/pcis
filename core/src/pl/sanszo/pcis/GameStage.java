@@ -13,7 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import pl.sanszo.pcis.sky.Cloud;
+
+import pl.sanszo.pcis.hud.Gameover;
+import pl.sanszo.pcis.hud.Hud;
+import pl.sanszo.pcis.hud.MuteButton;
+import pl.sanszo.pcis.hud.ScoreText;
 import pl.sanszo.pcis.sky.Fan;
 import pl.sanszo.pcis.sky.SkyActor;
 
@@ -25,7 +29,6 @@ import static com.badlogic.gdx.Gdx.input;
 
 
 public class GameStage extends Stage {
-    Texture img;
    // List<PhysicsActor> obstacleList = new ArrayList<>();
     private Polandball player;
     private Cannon cannon;
@@ -46,21 +49,22 @@ public class GameStage extends Stage {
     private FadeInOutSprite logo, tapToStart;
     private Gameover gameover;
     private Array<Fan> fanList = new Array<>();
-    private Stage hud;
+    private Hud hud;
     private ScoreText scoreText;
+    private MuteButton muteButton;
     private Vector<PhysicsActor> stuffVector = new Vector<>();
     private Vector<PhysicsActor> thingsToMoveUp = new Vector<>();
     private String[] powerupTypes = {"boostup", "boostdown", "boosthorizontal"};
     private String[] enemyTypes = {"british", "russia"};
 
-    private enum Mode {
+    public enum Mode {
         START,
         PLAY,
         TRY_AGAIN
     }
     private Mode currentMode = Mode.START;
 
-    public GameStage(Viewport viewport, SpriteBatch batch, FollowingCamera camera , Camera b2dCamera, Stage hud) {
+    public GameStage(Viewport viewport, SpriteBatch batch, FollowingCamera camera , Camera b2dCamera, Hud hud) {
         super(viewport, batch);
 
         this.hud = hud;
@@ -78,11 +82,9 @@ public class GameStage extends Stage {
         skyActor = new SkyActor(camera);
         addActor(skyActor);
 
-        float w = Game.WIDTH;
-        float h = Game.HEIGHT;
-        bottomSensor = new ObstacleActor(world, new Vector2(0,25), new Vector2(w, 10), "bottom", true, 1.2f);
-        leftBorder = new ObstacleActor(world, new Vector2(0,0), new Vector2(10, h), "left", false, 0.7f);
-        rightBorder = new ObstacleActor(world, new Vector2(w-10,0), new Vector2(10, h), "right", false, 0.7f);
+        bottomSensor = new ObstacleActor(world, new Vector2(0,25), new Vector2(Game.WIDTH, 10), "bottom", true, 1.2f);
+        leftBorder = new ObstacleActor(world, new Vector2(-10,0), new Vector2(10, Game.HEIGHT), "left", false, 0.7f);
+        rightBorder = new ObstacleActor(world, new Vector2(Game.WIDTH,0), new Vector2(10, Game.HEIGHT), "right", false, 0.7f);
 
 
         cannon = new Cannon();
@@ -97,7 +99,7 @@ public class GameStage extends Stage {
 
         camera.setPlayer(player);
         scoreText = new ScoreText(player);
-        this.hud.addActor(scoreText);
+        hud.addVisableAlwaysActor(scoreText);
 
         trampolineActor = new TrampolineActor(world, new Vector2(300,300), new Vector2(400,400), "elo", BodyDef.BodyType.KinematicBody, "trampoline");
         addActor(trampolineActor);
@@ -147,18 +149,20 @@ public class GameStage extends Stage {
         }
 
         logo = new FadeInOutSprite(Game.content.getTexture("logo"), 0.8f, 0.3f, 800f);
-        this.hud.addActor(logo);
+        hud.addVisableOnStartActor(logo);
 
         tapToStart = new FadeInOutSprite(Game.content.getTexture("taptostart"), 0.9f, 0.3f, 500f);
-        this.hud.addActor(tapToStart);
+        hud.addVisableOnStartActor(tapToStart);
 
         gameover = new Gameover(0.9f, 0.3f, 500f);
-        this.hud.addActor(gameover);
+        hud.addVisableInTryAgainModeActor(gameover);
 
-        logo.show();
-        tapToStart.show();
+        muteButton = new MuteButton();
 
-        SoundManager.playBackgroundMusic();
+        hud.addVisableOnStartAndTryAgain(muteButton);
+
+        hud.update(currentMode);
+
     }
 
     public void resetPhysicalActors(){
@@ -173,6 +177,7 @@ public class GameStage extends Stage {
     }
 
     public void restart() {
+        skyActor.restart();
         camera.restart();
         player.restart();
         touchingScreen = false;
@@ -204,7 +209,8 @@ public class GameStage extends Stage {
             SoundManager.playSingle("gameover");
             Gdx.input.vibrate(new long[] {0, 100, 50, 100}, -1);
             currentMode = Mode.TRY_AGAIN;
-            gameover.show(saveHighscore());
+            gameover.update(saveHighscore());
+            hud.update(currentMode);
         }
         leftBorder.setY(camera.position.y);
         rightBorder.setY(camera.position.y);
@@ -295,24 +301,21 @@ public class GameStage extends Stage {
 
     @Override
     public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+
         boolean actionsFinished = logo.getActions().size == 0 && tapToStart.getActions().size == 0 && gameover.getActions().size == 0;
         if(actionsFinished) {
             if ((currentMode == Mode.START || currentMode == Mode.TRY_AGAIN)) {
                 if (currentMode == Mode.TRY_AGAIN) {
-                    gameover.hide();
                     restart();
                 }
                 currentMode = Mode.PLAY;
-                logo.hide();
-                tapToStart.hide();
+                hud.update(currentMode);
                 startGame();
 
             } else {
                 Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
-                Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
                 if (Input.Buttons.LEFT == button && stageCoords.dst(player.getX(), player.getY()) > player.body.getFixtureList().get(0).getShape().getRadius()) {
                     touchingScreen = true;
-                    //SoundManager.playSingle("click");
                     touchBegin = stageCoords;
                     touchEnd = new Vector2(stageCoords);
                 }
@@ -325,7 +328,6 @@ public class GameStage extends Stage {
     public boolean touchUp (int screenX, int screenY, int pointer, int button) {
         if(currentMode == Mode.PLAY) {
             Vector2 stageCoords = screenToStageCoordinates(new Vector2(screenX, screenY));
-            Actor hittedActor = hit(stageCoords.x, stageCoords.y, true);
             if(touchingScreen) SoundManager.playSingle("click");
             if(Input.Buttons.RIGHT == button){
                 player.body.setTransform(stageCoords.x/100.f, stageCoords.y/100.f, player.body.getAngle());
@@ -356,20 +358,9 @@ public class GameStage extends Stage {
         return super.keyDown(keyCode);
     }
 
-    public void reloadContent(){
-        Fan.reloadFans();
-        Cloud.reloadClouds();
-        skyActor.updateTexture();
-        logo.updateTexture(Game.content.getTexture("logo"));
-        tapToStart.updateTexture(Game.content.getTexture("taptostart"));
-        gameover.updateTextures();
-        scoreText.updateTextures();
-        cannon.updateTextures();
-    }
 
     @Override
     public void dispose(){
-        img.dispose();
     }
 
 }

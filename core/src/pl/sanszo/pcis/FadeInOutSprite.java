@@ -6,9 +6,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
+import pl.sanszo.pcis.hud.HudActor;
 
 
-public class FadeInOutSprite extends Actor {
+public class FadeInOutSprite extends HudActor {
     protected Sprite sprite;
     private float fadeInDuration;
     private float fadeOutDuration;
@@ -20,10 +21,12 @@ public class FadeInOutSprite extends Actor {
         setPosition(Game.WIDTH/2f - sprite.getWidth()/2f, y);
     }
 
+    @Override
     public void show() {
         addAction(Actions.fadeIn(fadeInDuration));
     }
 
+    @Override
     public void hide() {
         addAction(Actions.fadeOut(fadeOutDuration));
     }

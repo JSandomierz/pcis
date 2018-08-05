@@ -1,9 +1,11 @@
-package pl.sanszo.pcis;
+package pl.sanszo.pcis.hud;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
+import pl.sanszo.pcis.FadeInOutSprite;
+import pl.sanszo.pcis.Game;
 
 
 public class Gameover extends FadeInOutSprite {
@@ -24,12 +26,11 @@ public class Gameover extends FadeInOutSprite {
         font = Game.content.getFont();
     }
 
-    public void show(boolean newRecord) {
+    public void update(boolean newRecord) {
         this.newRecord = newRecord;
         highScoreString = "Highscore: " + String.valueOf(Game.prefs.getInteger("highscore"));
         layout.setText(font, highScoreString);
         highScoreStringWidth = layout.width;
-        super.show();
     }
 
     @Override
