@@ -21,8 +21,8 @@ android {
         applicationId "pl.sanszo.pcis"
         minSdkVersion 8
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0.0a"
+        versionCode 2
+        versionName "1.1.0a"
     }
     buildTypes {
         release {
